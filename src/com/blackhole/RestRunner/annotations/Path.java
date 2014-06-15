@@ -1,4 +1,4 @@
-package com.blackhole.annotations;
+package com.blackhole.RestRunner.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

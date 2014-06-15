@@ -1,6 +1,6 @@
 package com.blackhole.communication;
 
-import com.blackhole.annotations.Path;
+import com.blackhole.RestRunner.annotations.Path;
 
 public class BusinessLogic {
 	public BusinessLogic() {} 

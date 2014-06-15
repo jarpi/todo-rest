@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blackhole.annotations.Path;
-import com.blackhole.restClassRunner.Runner;
+import com.blackhole.RestRunner.Runner;
+import com.blackhole.RestRunner.annotations.Path;
 
 public class RestServlet extends HttpServlet{
 	/**

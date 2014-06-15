@@ -1,4 +1,4 @@
-package com.blackhole.restClassRunner;
+package com.blackhole.RestRunner;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import com.blackhole.annotations.Path;
+import com.blackhole.RestRunner.annotations.Path;
 
 public class Runner { 
 	private static ArrayList<String> endPoints = new ArrayList<String>();  
