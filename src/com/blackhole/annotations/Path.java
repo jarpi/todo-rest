@@ -1,4 +1,4 @@
-package com.tfc.communication;
+package com.blackhole.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 
 @Target(value = ElementType.METHOD)
 @Retention(value = RetentionPolicy.RUNTIME)
-public @interface CanRun {
-
+public @interface Path {
+	public String value(); 
+	public String param(); 
 } 
+

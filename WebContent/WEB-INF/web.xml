@@ -14,12 +14,12 @@
   <!-- Declare the existence of a servlet. -->
   <servlet>
     <servlet-name>rest</servlet-name>
-    <servlet-class>com.tfc.communication.rest</servlet-class> 
+    <servlet-class>com.blackhole.communication.RestServlet</servlet-class> 
   </servlet>
 
   <!-- Map URLs to that servlet. -->
  <servlet-mapping>
     <servlet-name>rest</servlet-name>
-    <url-pattern>/rest</url-pattern>
+    <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
 </web-app>  	
