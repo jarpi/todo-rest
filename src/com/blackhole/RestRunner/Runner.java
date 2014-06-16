@@ -1,15 +1,13 @@
 package com.blackhole.RestRunner;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 
-import com.blackhole.RestRunner.annotations.Path;
+import com.blackhole.RestRunner.Annotations.Path;
 
 public class Runner { 
-	private static ArrayList<String> endPoints = new ArrayList<String>();  
+	// private static ArrayList<String> endPoints = new ArrayList<String>();  
 	public Runner(Class<?> annotatedClass, String pathToSearch) {
 		try { 
 			getClass().getClassLoader().loadClass(annotatedClass.getName()); 
