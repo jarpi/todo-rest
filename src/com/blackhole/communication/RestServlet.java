@@ -39,12 +39,12 @@ public class RestServlet extends HttpServlet{
 		 */ 
 		// Transform URI to Path.value param annotation 
 		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
-        new Runner(BusinessLogic.class, requestedPath); 
+        new Runner(BusinessLogic.class, requestedPath, "GET"); 
 	} 
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-	        throws ServletException, IOException {
+	        throws ServletException, IOException { 
 		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
-        new Runner(BusinessLogic.class, requestedPath);   
+        new Runner(BusinessLogic.class, requestedPath, "POST");    
 	} 
 } 
