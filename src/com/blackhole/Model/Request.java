@@ -5,8 +5,9 @@ public class Request {
 	private String verb; 
 	private String path; 
 	
+	// Parse an HTTPRequest 
 	public Request(String request) {
-		// Parse request and fill values 
+		// TODO: Parse request and fill values 
 	} 
 	
 	public String GetPath() {

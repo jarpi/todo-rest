@@ -2,6 +2,9 @@ package com.blackhole.communication;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.blackhole.Model.BusinessLogic;
+import com.blackhole.Model.Context;
 import com.blackhole.RestRunner.Runner;
 import com.blackhole.RestRunner.Annotations.Path;
 
@@ -38,13 +42,25 @@ public class RestServlet extends HttpServlet{
 		 *  - Scan automatically defined annotations  
 		 */ 
 		// Transform URI to Path.value param annotation 
+		Context c = new Context(); 
+		Logger l = c.getLoggingInstance(); 
+		l.log(Level.INFO, "Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
         new Runner(BusinessLogic.class, requestedPath, "GET"); 
+        c.dispose(); 
 	} 
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-	        throws ServletException, IOException { 
+	        throws ServletException, IOException {
+		Context c = new Context(); 
+		Logger l = c.getLoggingInstance(); 
+		l.log(Level.INFO, "Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
-        new Runner(BusinessLogic.class, requestedPath, "POST");    
+        new Runner(BusinessLogic.class, requestedPath, "POST");
+        c.dispose(); 
 	} 
+	
+	protected void doUpdate(HttpServletRequest req, HttpServletResponse resp) {}  
+	
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {} 
 } 

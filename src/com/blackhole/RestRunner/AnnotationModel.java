@@ -1,34 +1,34 @@
 package com.blackhole.RestRunner;
 
 public class AnnotationModel {
-	public enum types {
+	public enum AnnotationType {
 		GET("GET"), 
 		POST("POST"), 
 		NONE("NONE"); 
 		
-		String value; 
-		types(String value) {
-			this.value = value; 
+		String annotationName; 
+		AnnotationType(String value) {
+			this.annotationName = value; 
 		}
 		
 		@Override 
 		public String toString() {
-			return this.value; 
+			return this.annotationName; 
 		} 
 	} 
-	private types type; 
+	private AnnotationType type; 
 	private String path; 
 	
 	public AnnotationModel(){}
 	
-	public AnnotationModel(types type, String path) {
+	public AnnotationModel(AnnotationType type, String path) {
 		this.type = type; 
 		this.path = path; 
 	} 
 	
-	public types getType() { return this.type; } 
+	public AnnotationType getType() { return this.type; } 
 	public String getPath() { return this.path; } 
-	public void setType(types type) {this.type = type;}
+	public void setType(AnnotationType type) {this.type = type;}
 	public void setPath(String path) {this.path = path;}
 	
 }
