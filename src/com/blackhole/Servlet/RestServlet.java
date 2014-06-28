@@ -38,7 +38,7 @@ public class RestServlet extends HttpServlet{
 		 *  - Send an arbitrary number of annotation classes 
 		 *  - Scan automatically defined annotations  
 		 */ 
-		// Transform URI to Path.value param annotation 
+		// Transform URI to Path.value param type from annotation 
 		Context c = new Context(); 
 		Logger l = c.getLoggingInstance(); 
 		l.log(Level.INFO, "Starting GET Request|Time: " + "|IP:" + "|Request: "); 

@@ -20,12 +20,15 @@ public class Runner {
 		try { 
 			getClass().getClassLoader().loadClass(annotatedClass.getName()); 
 			Method[] methodsClassImpl = annotatedClass.getDeclaredMethods();   
-			for (Method m : methodsClassImpl) { 
+			for (Method m : methodsClassImpl) {  
 				// Get annotations by method 
 				Annotation[] annotationsMethod = m.getDeclaredAnnotations();
-				// Define an annotation model, it handles type of annotation (GET, POST) and relative path (Path) 
+				// Define an annotation model, it handles verb request (GET, POST) and relative path (Path) 
+				// It creates an annotationModel object that it's more useful as once created and filled, it'll be possible 
+				// to manage and organize rest requests 
 				AnnotationModel am = new AnnotationModel(); 
 				for (Annotation a : annotationsMethod) { 
+					// get method verb 
 					if (a.annotationType().equals(GET.class)) { 
 						am.setType(AnnotationType.GET); 
 					} else if (a.annotationType().equals(POST.class)) {
@@ -33,7 +36,16 @@ public class Runner {
 					}  else { 
 						if (am.getType().toString() == "") am.setType(AnnotationType.NONE);  
 					} 
-					if (a.annotationType().equals(PATH.class)) {  
+					// need to get if there are values to parse when request comes ANDALSO how much and type of this parameters 
+					// TODO do it recursively 
+					if (a.annotationType().equals(PATH.class)) {
+						String path; 
+						Object value; 
+						if (a.toString().indexOf("{")>-1) { 
+							// Parameter/s defined ---> Parse request to get params 
+							path = a.toString().substring(0,a.toString().indexOf("{")); 
+							String values = a.toString().substring(a.toString().indexOf("}"));   
+						}
 						PATH p = (PATH) a; 
 						am.setPath(p.value()); 
 					} 
@@ -48,7 +60,7 @@ public class Runner {
 					e.printStackTrace();
 				}
 				// Do anything with methods run... 
-			}
+			} 
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SecurityException e) {
 			e.printStackTrace();
 		}  

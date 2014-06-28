@@ -14,7 +14,7 @@
   <!-- Declare the existence of a servlet. -->
   <servlet>
     <servlet-name>rest</servlet-name>
-    <servlet-class>com.blackhole.communication.RestServlet</servlet-class> 
+    <servlet-class>com.blackhole.Servlet.RestServlet</servlet-class> 
   </servlet>
 
   <!-- Map URLs to that servlet. -->
