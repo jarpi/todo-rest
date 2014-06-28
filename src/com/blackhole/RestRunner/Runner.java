@@ -4,10 +4,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.blackhole.RestRunner.AnnotationModel.AnnotationType;
+import com.blackhole.RestRunner.Annotations.AnnotationModel;
 import com.blackhole.RestRunner.Annotations.GET;
 import com.blackhole.RestRunner.Annotations.POST;
-import com.blackhole.RestRunner.Annotations.Path;
+import com.blackhole.RestRunner.Annotations.PATH;
+import com.blackhole.RestRunner.Annotations.AnnotationModel.AnnotationType;
 
 public class Runner { 
 	// private static ArrayList<String> endPoints = new ArrayList<String>();  
@@ -32,8 +33,8 @@ public class Runner {
 					}  else { 
 						if (am.getType().toString() == "") am.setType(AnnotationType.NONE);  
 					} 
-					if (a.annotationType().equals(Path.class)) {  
-						Path p = (Path) a; 
+					if (a.annotationType().equals(PATH.class)) {  
+						PATH p = (PATH) a; 
 						am.setPath(p.value()); 
 					} 
 				}  

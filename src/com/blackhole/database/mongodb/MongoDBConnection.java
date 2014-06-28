@@ -1,4 +1,4 @@
-package com.blackhole.mongodb;
+package com.blackhole.database.mongodb;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;

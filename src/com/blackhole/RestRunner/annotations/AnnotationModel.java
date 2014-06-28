@@ -1,4 +1,4 @@
-package com.blackhole.RestRunner;
+package com.blackhole.RestRunner.Annotations;
 
 public class AnnotationModel {
 	public enum AnnotationType {

@@ -1,8 +1,6 @@
-package com.blackhole.communication;
+package com.blackhole.Servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,10 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blackhole.Model.BusinessLogic;
-import com.blackhole.Model.Context;
+import com.blackhole.App.BusinessLogic;
+import com.blackhole.App.Context;
 import com.blackhole.RestRunner.Runner;
-import com.blackhole.RestRunner.Annotations.Path;
 
 public class RestServlet extends HttpServlet{
 	/**
@@ -54,7 +51,7 @@ public class RestServlet extends HttpServlet{
 	        throws ServletException, IOException {
 		Context c = new Context(); 
 		Logger l = c.getLoggingInstance(); 
-		l.log(Level.INFO, "Starting GET Request|Time: " + "|IP:" + "|Request: "); 
+		l.log(Level.INFO, "Starting POST Request|Time: " + "|IP:" + "|Request: "); 
 		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
         new Runner(BusinessLogic.class, requestedPath, "POST");
         c.dispose(); 

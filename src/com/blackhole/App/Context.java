@@ -1,4 +1,4 @@
-package com.blackhole.Model;
+package com.blackhole.App;
 
 import java.util.logging.*; 
 
