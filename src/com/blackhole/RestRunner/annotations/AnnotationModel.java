@@ -1,5 +1,6 @@
 package com.blackhole.RestRunner.Annotations;
 
+// REST annotation model, contains info about annotation state 
 public class AnnotationModel { 
 	// As we know wich are request verbs, we can create a well-known variable to handle it 
 	public enum AnnotationType {
@@ -7,7 +8,7 @@ public class AnnotationModel {
 		POST("POST"), 
 		NONE("NONE"); 
 		
-		String annotationName; 
+		String annotationName = ""; 
 		AnnotationType(String value) {
 			this.annotationName = value; 
 		}
@@ -17,7 +18,7 @@ public class AnnotationModel {
 			return this.annotationName; 
 		} 
 	} 
-	private AnnotationType type; 
+	private AnnotationType type = AnnotationType.NONE; 
 	private String path;
 	// This variable refers to {id} parameter on request, as we don't know wich type of variable will be, it need to declare as 
 	// Object type. 

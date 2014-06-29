@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blackhole.App.RestBusinessLogic;
+import com.blackhole.App.NotesBusinessLogic;
 import com.blackhole.App.Context;
 import com.blackhole.RestRunner.Runner;
 
@@ -43,7 +43,7 @@ public class RestServlet extends HttpServlet{
 		Logger l = c.getLoggingInstance(); 
 		l.log(Level.INFO, "Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
-        new Runner(RestBusinessLogic.class, requestedPath, "GET"); 
+        new Runner(NotesBusinessLogic.class, requestedPath, "GET"); 
         c.dispose(); 
 	} 
 	
@@ -53,7 +53,7 @@ public class RestServlet extends HttpServlet{
 		Logger l = c.getLoggingInstance(); 
 		l.log(Level.INFO, "Starting POST Request|Time: " + "|IP:" + "|Request: "); 
 		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
-        new Runner(RestBusinessLogic.class, requestedPath, "POST");
+        new Runner(NotesBusinessLogic.class, requestedPath, "POST");
         c.dispose(); 
 	} 
 	

@@ -36,16 +36,17 @@ public class Runner {
 					}  else { 
 						if (am.getType().toString() == "") am.setType(AnnotationType.NONE);  
 					} 
-					// need to get if there are values to parse when request comes ANDALSO how much and type of this parameters 
+					// get params  
+					// TODO multi params 
 					// TODO do it recursively 
 					if (a.annotationType().equals(PATH.class)) {
-						String path; 
+						/* String path; 
 						Object value; 
 						if (a.toString().indexOf("{")>-1) { 
 							// Parameter/s defined ---> Parse request to get params 
 							path = a.toString().substring(0,a.toString().indexOf("{")); 
 							String values = a.toString().substring(a.toString().indexOf("}"));   
-						}
+						} */ 
 						PATH p = (PATH) a; 
 						am.setPath(p.value()); 
 					} 
