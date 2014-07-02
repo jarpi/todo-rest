@@ -1,11 +1,16 @@
 package com.blackhole.RestRunner.Annotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // REST annotation model, contains info about annotation state 
 public class AnnotationModel { 
 	// As we know wich are request verbs, we can create a well-known variable to handle it 
 	public enum AnnotationType {
 		GET("GET"), 
-		POST("POST"), 
+		POST("POST"),
+		PUT("PUT"), 
+		DELETE("DELETE"), 
 		NONE("NONE"); 
 		
 		String annotationName = ""; 
@@ -18,24 +23,26 @@ public class AnnotationModel {
 			return this.annotationName; 
 		} 
 	} 
-	private AnnotationType type = AnnotationType.NONE; 
-	private String path;
+	private AnnotationType mType = AnnotationType.NONE; 
+	private String mPath=""; 
 	// This variable refers to {id} parameter on request, as we don't know wich type of variable will be, it need to declare as 
 	// Object type. 
-	private Object value; 
+	private List<Object> mParams = new ArrayList<Object>(); 
+	private boolean mPathMatches = false; 
 	
 	public AnnotationModel(){}
 	
-	public AnnotationModel(AnnotationType type, String path, Object value) {
-		this.type = type; 
-		this.path = path; 
-		this.value = value; 
+	public AnnotationModel(AnnotationType type, String path) {
+		this.mType = type; 
+		this.mPath = path; 
 	} 
 	
-	public AnnotationType getType() { return this.type; } 
-	public String getPath() { return this.path; }
-	public Object getValue() {return this.value; }
-	public void setType(AnnotationType type) {this.type = type;}
-	public void setPath(String path) {this.path = path;}
-	public void setValue(Object value) {this.value = value;} 
+	public AnnotationType getType() { return this.mType; } 
+	public String getPath() { return this.mPath; }
+	public Object[] getValues() {return this.mParams.toArray(); }
+	public void setType(AnnotationType type) {this.mType = type;}
+	public void setPath(String path) {this.mPath = path;}
+	public void setPathMatches(boolean match) {this.mPathMatches = match;}
+	public void addValue(Object value) {this.mParams.add(value);} 
+	public boolean getPathMatches() {return this.mPathMatches;}
 }

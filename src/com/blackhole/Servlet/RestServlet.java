@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.blackhole.App.NotesBusinessLogic;
 import com.blackhole.App.Context;
+import com.blackhole.App.Request;
 import com.blackhole.RestRunner.Runner;
 
 public class RestServlet extends HttpServlet{
@@ -42,8 +43,8 @@ public class RestServlet extends HttpServlet{
 		Context c = new Context(); 
 		Logger l = c.getLoggingInstance(); 
 		l.log(Level.INFO, "Starting GET Request|Time: " + "|IP:" + "|Request: "); 
-		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
-        new Runner(NotesBusinessLogic.class, requestedPath, "GET"); 
+		Request r = new Request(req);  
+        new Runner(NotesBusinessLogic.class, r.getPath(), r.getVerb()); 
         c.dispose(); 
 	} 
 	
@@ -52,12 +53,26 @@ public class RestServlet extends HttpServlet{
 		Context c = new Context(); 
 		Logger l = c.getLoggingInstance(); 
 		l.log(Level.INFO, "Starting POST Request|Time: " + "|IP:" + "|Request: "); 
-		String requestedPath = req.getRequestURI().substring(req.getContextPath().length()).substring(req.getServletPath().length()); 
-        new Runner(NotesBusinessLogic.class, requestedPath, "POST");
+		Request r = new Request(req);  
+        new Runner(NotesBusinessLogic.class, r.getPath(), r.getVerb()); 
         c.dispose(); 
 	} 
 	
-	protected void doUpdate(HttpServletRequest req, HttpServletResponse resp) {}  
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+		Context c = new Context(); 
+		Logger l = c.getLoggingInstance(); 
+		l.log(Level.INFO, "Starting POST Request|Time: " + "|IP:" + "|Request: "); 
+		Request r = new Request(req);  
+        new Runner(NotesBusinessLogic.class, r.getPath(), r.getVerb()); 
+        c.dispose(); 
+	}  
 	
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {} 
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+		Context c = new Context(); 
+		Logger l = c.getLoggingInstance(); 
+		l.log(Level.INFO, "Starting POST Request|Time: " + "|IP:" + "|Request: "); 
+		Request r = new Request(req);  
+        new Runner(NotesBusinessLogic.class, r.getPath(), r.getVerb()); 
+        c.dispose(); 
+	} 
 } 
