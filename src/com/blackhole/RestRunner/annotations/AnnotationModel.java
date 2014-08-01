@@ -28,7 +28,7 @@ public class AnnotationModel {
 	// This variable refers to {id} parameter on request, as we don't know wich type of variable will be, it need to declare as 
 	// Object type. 
 	private List<Object> mParams = new ArrayList<Object>(); 
-	private boolean mPathMatches = false; 
+	private boolean mPathMatch = false; 
 	
 	public AnnotationModel(){}
 	
@@ -42,7 +42,7 @@ public class AnnotationModel {
 	public Object[] getValues() {return this.mParams.toArray(); }
 	public void setType(AnnotationType type) {this.mType = type;}
 	public void setPath(String path) {this.mPath = path;}
-	public void setPathMatches(boolean match) {this.mPathMatches = match;}
+	public void setPathMatches(boolean match) {this.mPathMatch = match;}
 	public void addValue(Object value) {this.mParams.add(value);} 
-	public boolean getPathMatches() {return this.mPathMatches;}
+	public boolean getPathMatches() {return this.mPathMatch;}
 }

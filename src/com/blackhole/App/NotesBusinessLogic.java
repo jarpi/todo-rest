@@ -1,20 +1,5 @@
 package com.blackhole.App;
 
-import java.net.URL;
-
-import javax.media.Format;
-import javax.media.Manager;
-import javax.media.Player;
-import javax.media.PlugInManager;
-import javax.media.format.AudioFormat;
-
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.application.Application; 
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
-
 import com.blackhole.RestRunner.Annotations.DELETE;
 import com.blackhole.RestRunner.Annotations.GET;
 import com.blackhole.RestRunner.Annotations.POST;
@@ -23,6 +8,7 @@ import com.blackhole.RestRunner.Annotations.PUT;
 import com.blackhole.RestRunner.Annotations.PathParam;
 
 public class NotesBusinessLogic {
+	private Context mObjContext = new Context();  
 	public NotesBusinessLogic() {} 
 	
  	@GET 
@@ -52,18 +38,18 @@ public class NotesBusinessLogic {
 	@GET 
 	@PATH(value="/play/flaixfm") 
 	public void playFlaixFmRadio() {
-		new MP3Player("http://195.10.10.220/flaix/flaixfmnopub.mp3"); 
+		this.mObjContext.setNewMP3Player("http://195.10.10.221/flaix/shoutcastmp3.mp3"); 
 	} 
 	
 	@GET 
 	@PATH(value="/stop/flaixfm") 
 	public void stopFlaixFmRadio() {
-		new MP3Player("").stopPlayer(); 
+		 this.mObjContext.stopMP3Player(); 
 	}
 	
 	@POST 
 	@PATH(value="/set/flaixfm/volume/{vol}") 
-	public void setVolumeFlaixFmRadio(@PathParam("vol") float vol) {
-		new MP3Player("").setVolume(vol);  
+	public void setVolumeFlaixFmRadio(@PathParam("vol") String vol) {
+		this.mObjContext.setMP3PlayerVolume(Integer.parseInt(vol)); 
 	} 
-}
+} 
