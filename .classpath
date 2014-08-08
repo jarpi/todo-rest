@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/customizer.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mediaplayer.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mp3plugin.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/sqlite-jdbc-3.7.15-M1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blackhole.App.NotesBusinessLogic;
+import com.blackhole.App.AppFacade;
 import com.blackhole.App.Context;
 import com.blackhole.RestRunner.Runner;
 
@@ -42,7 +42,7 @@ public class RestServlet extends HttpServlet{
 		Context c = Context.getInstance();  
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
-        new Runner(NotesBusinessLogic.class, r.getPath(), r.getVerb()); 
+        new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
 	} 
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -50,20 +50,20 @@ public class RestServlet extends HttpServlet{
 		Context c = Context.getInstance();  
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
-        new Runner(NotesBusinessLogic.class, r.getPath(), r.getVerb()); 
+        new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
 	} 
 	
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
 		Context c = Context.getInstance();  
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
-        new Runner(NotesBusinessLogic.class, r.getPath(), r.getVerb()); 
+        new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
 	}  
 	
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
 		Context c = Context.getInstance();  
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
-        new Runner(NotesBusinessLogic.class, r.getPath(), r.getVerb()); 
+        new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
 	} 
 } 

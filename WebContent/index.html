@@ -1,1 +1,51 @@
-<h1>Hello world!</h1> 
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/style.css"></link>
+<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>  
+<script type="text/javascript" src="js/init.js"></script>
+</head> 
+</html>
+<header id="banner" role="banner">
+    <div id="banner-inner-wrapper">
+        <div id="banner-inner">
+            <hgroup id="title">
+                <div id="logo"><img src="images/logo.png" title="Responsive Bar" /></div>
+                <div id="text">
+                	<h1>ToDos app</h1>
+                	<h5>Welcome back, Admin</h5>
+                </div>
+                <div id="header_options"><ul><li>Option 1</li><li>Option 2</li><li>Option 3</li></ul></div> 
+            </hgroup>
+            
+            <nav id="menu-nav">
+                <!-- button to show and hide the menu -->
+                <div id="menu-button">
+                    <div id="menu-button-inner"></div>
+                </div>
+            </nav>
+             
+        </div>
+    </div>
+    <!-- menu itself -->
+    <nav id="menu-drink">
+        <ul>
+        	<a class="player" href="#">
+	            <li>
+	                <div class="icon">Player</div>
+	            </li>
+            </a>
+            <a class="todos" href="#">
+	            <li>
+	                <div class="icon">Todos</div>
+	            </li>
+            </a>
+        </ul>
+    </nav>
+</header>
+<div id="content">
+	<div id="player">
+		<div id="start"><p>Start</p></div>
+		<div id="stop"><p>Stop</p></div>
+		<div id="volume"><p>Volume</p></div> 
+	</div>
+</div>
