@@ -43,6 +43,26 @@
     </nav>
 </header>
 <div id="content">
+	<script type="text/javascript">
+		$(document).ready(function(){  
+			// When user clicks on start player ... 
+			$("#start").click(function(){
+				$("#player").append("<p class='loading'>Loading...</p>");
+				$.ajax({
+					url:"http://localhost:8080/todo-rest/rest/play/flaixfm"
+				}).then(function(data){ 
+					$(".loading").remove(); 
+				}); 
+			}); 
+			$("#stop").click(function(){ 
+				$.ajax({
+					url:"http://localhost:8080/todo-rest/rest/stop/flaixfm" 
+				}).then(function(data){  
+					alert(data); 
+				}); 
+			}); 
+		}); 
+	</script>
 	<div id="player">
 		<div id="start"><p>Start</p></div>
 		<div id="stop"><p>Stop</p></div>
