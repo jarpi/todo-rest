@@ -52,6 +52,7 @@ public class AppFacade {
 	public void isPlayerRunning() {
 		boolean isRunning = Context.mObjMP3Player.isPlayerRunning();
 		try { 
+			this.mObjContext.logInfo(String.valueOf(isRunning));  
 			this.mObjContext.sendResponse(String.valueOf(isRunning)); 
 		} catch (IOException e) {
 			e.printStackTrace(); 
@@ -62,7 +63,6 @@ public class AppFacade {
 	@PATH(value="/play/flaixfm") 
 	public void playFlaixFmRadio() {
 		this.mObjContext.setNewMP3Player("http://195.10.10.219/flaix/shoutcastmp3.mp3"); 
-		// this.mObjContext.setNewMP3Player("/tmp/test.mp3");
 	} 
 	
 	@GET 
@@ -84,11 +84,5 @@ public class AppFacade {
 	public void delVolume() {
 		System.out.println("Facade del volume"); 
 		Context.mObjMP3Player.decreaseVolume(); 
-	}
-	
-	/* @POST 
-	@PATH(value="/set/flaixfm/volume/{vol}") 
-	public void setVolumeFlaixFmRadio(@PathParam("vol") String vol) {
-		this.mObjContext.setMP3PlayerVolume(Integer.parseInt(vol)); 
-	} */ 
+	}  
 } 

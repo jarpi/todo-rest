@@ -19,7 +19,8 @@ public class MP3PlayerBusiness {
 		return MP3PlayerBusiness.mInstance; 
 	} 
 	
-	public void startPlayer(String url) {
+	public void startPlayer(String url) { 
+		Context.getInstance().logInfo("Start player"); 
 		this.mUrlToPlay = url;  
 		this.run(); 
 	} 
@@ -37,6 +38,7 @@ public class MP3PlayerBusiness {
 	} 
 
 	public void stopPlayer() { 
+		Context.getInstance().logInfo("Stop player"); 
 		if (this.mProcess != null) { 
 			try {
 				OutputStream os = this.mProcess.getOutputStream();
@@ -55,6 +57,7 @@ public class MP3PlayerBusiness {
 	} 
 	
 	public void increaseVolume() { 
+		Context.getInstance().logInfo("Increase volume"); 
 		if (this.mProcess != null) {
 			try { 
 				OutputStream os = this.mProcess.getOutputStream();
@@ -69,7 +72,7 @@ public class MP3PlayerBusiness {
 	
 	
 	public void decreaseVolume() {
-		System.out.println("Business del volume"); 
+		Context.getInstance().logInfo("Decrease volume"); 
 		if (this.mProcess != null) {
 			try {
 				OutputStream os = this.mProcess.getOutputStream();
@@ -82,7 +85,8 @@ public class MP3PlayerBusiness {
 		} 
 	} 
 	
-	public boolean isPlayerRunning() {
+	public boolean isPlayerRunning() { 
+		Context.getInstance().logInfo("Is player running");  
 		return (this.mProcess!=null); 
 	}
 } 
