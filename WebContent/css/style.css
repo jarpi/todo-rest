@@ -156,6 +156,17 @@
 	height:5em; 
 }
 
+#content #player #volume #addVolume{
+	float:left; 
+	width:50%; 
+	height:5em; 
+}
+
+#content #player #volume #delVolume{
+	float:right; 
+	width:50%; 
+	height:5em; 
+}
 
 @media screen and (min-width: 480px) {
     /* 

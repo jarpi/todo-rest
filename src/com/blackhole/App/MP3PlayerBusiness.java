@@ -1,36 +1,16 @@
 package com.blackhole.App;
 
-import java.net.URL;
+import java.io.OutputStream;
 
-import javax.media.Format;
-import javax.media.Manager;
-import javax.media.Player;
-import javax.media.PlugInManager;
-import javax.media.format.AudioFormat; 
-
-public class MP3PlayerBusiness extends Thread {
+public class MP3PlayerBusiness {
 	
 	private static MP3PlayerBusiness mInstance; 
-	private Player mPlayer; 
 	private String mUrlToPlay = ""; 
+	private Process mProcess = null; 
 	
 	protected MP3PlayerBusiness() { 
-		if (this.mPlayer == null) { 
-			try{
-				Format input1 = new AudioFormat(AudioFormat.MPEGLAYER3);
-				// Format input2 = new AudioFormat(AudioFormat.MPEG);
-				Format output = new AudioFormat(AudioFormat.LINEAR);
-				PlugInManager.addPlugIn(
-					"com.sun.media.codec.audio.mp3.JavaDecoder",
-					new Format[]{input1},
-					new Format[]{output},
-					PlugInManager.CODEC
-				);   
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	} 
+		
+	}
 	
 	public static MP3PlayerBusiness getInstance() { 
 		if (MP3PlayerBusiness.mInstance == null) {
@@ -40,62 +20,69 @@ public class MP3PlayerBusiness extends Thread {
 	} 
 	
 	public void startPlayer(String url) {
-		this.mUrlToPlay = url; 
-		run(); 
-	}
+		this.mUrlToPlay = url;  
+		this.run(); 
+	} 
 	
-	public void run() {
-		if (this.mPlayer == null) {
-			try { 
-				Manager.setHint(Manager.CACHING, false);
-				Manager.setHint(Manager.LIGHTWEIGHT_RENDERER, true); 
-				this.mPlayer = Manager.createPlayer(new URL(mUrlToPlay));  
-				this.mPlayer.start(); 
+	
+	public void run() { 
+		if (this.mProcess == null) { 
+			try {
+				java.lang.Runtime rt = java.lang.Runtime.getRuntime();
+		        this.mProcess = rt.exec("omxplayer --vol -2100 " + this.mUrlToPlay);  
+			} catch (Exception e) { 
+				e.printStackTrace(); 
+			} 
+		} 
+	} 
+
+	public void stopPlayer() { 
+		if (this.mProcess != null) { 
+			try {
+				OutputStream os = this.mProcess.getOutputStream();
+				os.write("q".getBytes()); 
+				os.flush(); 
+				this.mProcess.waitFor(); 
+				int i = this.mProcess.exitValue(); 
+				os = null; 
+				this.mProcess = null; 
 			} catch (Exception e) {
-				e.printStackTrace();
+				e.printStackTrace(); 
+			} finally {
+				this.mProcess = null;  
+			} 
+		} 
+	} 
+	
+	public void increaseVolume() { 
+		if (this.mProcess != null) {
+			try { 
+				OutputStream os = this.mProcess.getOutputStream();
+				os.write("+".getBytes()); 
+				os.flush(); 
+				os = null; 
+			} catch (Exception e) {
+				e.printStackTrace(); 
 			} 
 		}
-	} 
+	}
 	
-	public void setVolume(int vol) { 
-		if (this.mPlayer != null) { 
-			if (vol < 9) {   
-				float f = (float) vol/10; 
-				this.setVolumeWithEffect(f); 
-			}  
-		} 
-	} 
 	
-	public void stopPlayer() { 
-		if (this.mPlayer != null) { 
-			this.mPlayer.stop(); 
-			this.mPlayer.close(); 
-			this.mPlayer.deallocate(); 
-			this.mPlayer = null; 
-		} 
-	} 
-	
-	private void setVolumeWithoutEffect(float vol) {
-		this.mPlayer.getGainControl().setLevel(vol); 
-	} 
-	
-	private void setVolumeWithEffect(float vol) { 
-		float  currentVol = this.mPlayer.getGainControl().getLevel();
-		float increment = 0.01f;  
-		if (vol < currentVol) {
-			increment = -0.01f; 
-		} 
-		while (currentVol != vol) { 
-			currentVol += increment; 
-			currentVol = (float) Math.round(currentVol*100)/100; 
-			this.mPlayer.getGainControl().setLevel(currentVol);
-			currentVol = this.mPlayer.getGainControl().getLevel(); 
-			try { 
-				sleep(100); 
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	public void decreaseVolume() {
+		System.out.println("Business del volume"); 
+		if (this.mProcess != null) {
+			try {
+				OutputStream os = this.mProcess.getOutputStream();
+				os.write("-".getBytes());
+				os.flush(); 
+				os = null; 
+			} catch (Exception e) {
+				e.printStackTrace(); 
 			} 
 		} 
 	} 
+	
+	public boolean isPlayerRunning() {
+		return (this.mProcess!=null); 
+	}
 } 

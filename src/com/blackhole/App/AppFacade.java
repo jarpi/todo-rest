@@ -1,5 +1,7 @@
 package com.blackhole.App;
 
+import java.io.IOException;
+
 import com.blackhole.App.TodosBusiness.todo;
 import com.blackhole.RestRunner.Annotations.DELETE;
 import com.blackhole.RestRunner.Annotations.GET;
@@ -46,20 +48,47 @@ public class AppFacade {
 	public void testing4(@PathParam("id") String id) {System.out.println("CCC");} 
 	
 	@GET 
+	@PATH(value="/player/isrunning") 
+	public void isPlayerRunning() {
+		boolean isRunning = Context.mObjMP3Player.isPlayerRunning();
+		try { 
+			this.mObjContext.sendResponse(String.valueOf(isRunning)); 
+		} catch (IOException e) {
+			e.printStackTrace(); 
+		}
+	} 
+	
+	@GET 
 	@PATH(value="/play/flaixfm") 
 	public void playFlaixFmRadio() {
-		this.mObjContext.setNewMP3Player("http://195.10.10.206/flaix/shoutcastmp3.mp3"); 
+		this.mObjContext.setNewMP3Player("http://195.10.10.219/flaix/shoutcastmp3.mp3"); 
+		// this.mObjContext.setNewMP3Player("/tmp/test.mp3");
 	} 
 	
 	@GET 
 	@PATH(value="/stop/flaixfm") 
 	public void stopFlaixFmRadio() {
-		 this.mObjContext.stopMP3Player(); 
+		System.out.println("Facade stop"); 
+		Context.mObjMP3Player.stopPlayer(); 
 	}
 	
-	@POST 
+	@GET 
+	@PATH(value="/volume/add") 
+	public void addVolume() {
+		System.out.println("Facade add volume"); 
+		Context.mObjMP3Player.increaseVolume(); 
+	}
+	
+	@GET 
+	@PATH(value="/volume/del") 
+	public void delVolume() {
+		System.out.println("Facade del volume"); 
+		Context.mObjMP3Player.decreaseVolume(); 
+	}
+	
+	/* @POST 
 	@PATH(value="/set/flaixfm/volume/{vol}") 
 	public void setVolumeFlaixFmRadio(@PathParam("vol") String vol) {
 		this.mObjContext.setMP3PlayerVolume(Integer.parseInt(vol)); 
-	} 
+	} */ 
 } 

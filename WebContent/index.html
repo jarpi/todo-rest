@@ -45,27 +45,49 @@
 <div id="content">
 	<script type="text/javascript">
 		$(document).ready(function(){  
-			// When user clicks on start player ... 
+			// Check player is running 
+			$.ajax({
+					url:"http://192.168.1.100:8080/todo-rest/rest/player/isrunning" 
+				}).then(function(data){ 
+					console.log(data); 
+					$("#player").append("<p class='loading'>"+ data + "</p>");
+				}); 
+			// When user clicks on start player ...  
 			$("#start").click(function(){
 				$("#player").append("<p class='loading'>Loading...</p>");
 				$.ajax({
-					url:"http://localhost:8080/todo-rest/rest/play/flaixfm"
+					url:"http://192.168.1.100:8080/todo-rest/rest/play/flaixfm"
 				}).then(function(data){ 
 					$(".loading").remove(); 
 				}); 
 			}); 
 			$("#stop").click(function(){ 
 				$.ajax({
-					url:"http://localhost:8080/todo-rest/rest/stop/flaixfm" 
+					url:"http://192.168.1.100:8080/todo-rest/rest/stop/flaixfm" 
 				}).then(function(data){  
-					alert(data); 
+					
 				}); 
 			}); 
+			$("#addVolume").click(function(){ 
+				$.ajax({
+					url:"http://192.168.1.100:8080/todo-rest/rest/volume/add" 
+				}).then(function(data){  
+				}); 
+			});
+			$("#delVolume").click(function(){ 
+				$.ajax({
+					url:"http://192.168.1.100:8080/todo-rest/rest/volume/del" 
+				}).then(function(data){  
+				}); 
+			});
 		}); 
 	</script>
 	<div id="player">
 		<div id="start"><p>Start</p></div>
 		<div id="stop"><p>Stop</p></div>
-		<div id="volume"><p>Volume</p></div> 
+		<div id="volume">
+			<div id="addVolume"><p>Add Volume</p></div>
+			<div id="delVolume"><p>Del Volume</p></div> 
+		</div> 
 	</div>
 </div>

@@ -1,8 +1,6 @@
 package com.blackhole.Servlet;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,9 +12,7 @@ import com.blackhole.App.Context;
 import com.blackhole.RestRunner.Runner;
 
 public class RestServlet extends HttpServlet{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -2258190026635506539L;
 
 	public RestServlet(){}
@@ -39,7 +35,9 @@ public class RestServlet extends HttpServlet{
 		 *  - Scan automatically defined annotations  
 		 */ 
 		// Transform URI to Path.value param type from annotation 
-		Context c = Context.getInstance();  
+		Context c = Context.getInstance(); 
+		c.setRequest(req); 
+		c.setResponse(resp);  
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
         new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
