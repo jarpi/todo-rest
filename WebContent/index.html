@@ -47,7 +47,7 @@
 		$(document).ready(function(){  
 			// Check player is running 
 			$.ajax({
-					url:"http://192.168.1.100:8080/todo-rest/rest/player/isrunning" 
+					url:"http://192.168.1.103:8080/todo-rest/rest/player/isrunning" 
 				}).then(function(data){ 
 					console.log(data); 
 					$("#player").append("<p class='loading'>"+ data + "</p>");
@@ -56,27 +56,27 @@
 			$("#start").click(function(){
 				$("#player").append("<p class='loading'>Loading...</p>");
 				$.ajax({
-					url:"http://192.168.1.100:8080/todo-rest/rest/play/flaixfm"
+					url:"http://192.168.1.103:8080/todo-rest/rest/play/flaixfm"
 				}).then(function(data){ 
 					$(".loading").remove(); 
 				}); 
 			}); 
 			$("#stop").click(function(){ 
 				$.ajax({
-					url:"http://192.168.1.100:8080/todo-rest/rest/stop/flaixfm" 
+					url:"http://192.168.1.103:8080/todo-rest/rest/stop/flaixfm" 
 				}).then(function(data){  
 					
 				}); 
 			}); 
 			$("#addVolume").click(function(){ 
 				$.ajax({
-					url:"http://192.168.1.100:8080/todo-rest/rest/volume/add" 
+					url:"http://192.168.1.103:8080/todo-rest/rest/volume/add" 
 				}).then(function(data){  
 				}); 
 			});
 			$("#delVolume").click(function(){ 
 				$.ajax({
-					url:"http://192.168.1.100:8080/todo-rest/rest/volume/del" 
+					url:"http://192.168.1.103:8080/todo-rest/rest/volume/del" 
 				}).then(function(data){  
 				}); 
 			});

@@ -49,14 +49,16 @@ public class AppFacade {
 	
 	@GET 
 	@PATH(value="/player/isrunning") 
-	public void isPlayerRunning() {
+	public boolean isPlayerRunning() {
 		boolean isRunning = Context.mObjMP3Player.isPlayerRunning();
 		try { 
 			this.mObjContext.logInfo(String.valueOf(isRunning));  
-			this.mObjContext.sendResponse(String.valueOf(isRunning)); 
-		} catch (IOException e) {
-			e.printStackTrace(); 
+			// this.mObjContext.sendResponse(String.valueOf(isRunning)); 
+			return isRunning; 
+		} catch (Exception e) {
+			e.printStackTrace();  
 		}
+		return false; 
 	} 
 	
 	@GET 

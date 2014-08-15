@@ -1,7 +1,6 @@
 package com.blackhole.App;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.*; 
 
@@ -83,15 +82,15 @@ public class Context {
 	} 
 	
 	public void setRequest(HttpServletRequest request) {
-		this.mRequest = request; 
+		Context.getInstance().mRequest = request; 
 	}
 	
 	public void setResponse(HttpServletResponse response) {
-		this.mResponse = response; 
+		Context.getInstance().mResponse = response; 
 	}
 	
 	public void sendResponse(String result) throws IOException {
-		this.mResponse.getWriter().print(result); 
+		Context.getInstance().mResponse.getWriter().print(result); 
 	}
 	
 	public void dispose() {

@@ -41,6 +41,7 @@ public class RestServlet extends HttpServlet{
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
         new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
+        // if (result != null) resp.getWriter().print(result); 
 	} 
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)

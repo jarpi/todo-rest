@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.blackhole.App.AppFacade;
 import com.blackhole.App.Context;
 import com.blackhole.RestRunner.Annotations.AnnotationModel;
 import com.blackhole.RestRunner.Annotations.DELETE;
@@ -19,7 +20,9 @@ public class Runner {
 	// - Create a new  method that will run annotation methods defined in vars 
 	// - Create a new  method that analyzes methods in a class and keep in an array 
 	// - ... 
-	public Runner(Class<?> annotatedClass, String pathToSearch, String methodType) { 
+	
+	public  Runner(Class<?> annotatedClass, String pathToSearch, String methodType) { 
+		Object result  = null; 
 		try { 
 			getClass().getClassLoader().loadClass(annotatedClass.getName()); 
 			Method[] methodsClassImpl = annotatedClass.getDeclaredMethods();   
@@ -80,12 +83,12 @@ public class Runner {
 						} 
 					} 
 				}  
-				try { 
+				try {  
 					if (am.getType().toString().equals(methodType) && am.getPathMatches()) {
 						if (am.getValues() != null) {
-							m.invoke(annotatedClass.newInstance(), am.getValues()); 	
+							result = m.invoke(annotatedClass.newInstance(), am.getValues()); 	
 						} else { 
-							m.invoke(annotatedClass.newInstance());
+							result = m.invoke(annotatedClass.newInstance()); 
 						} 
 						break; 
 					}  
@@ -98,5 +101,6 @@ public class Runner {
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SecurityException e) {
 			e.printStackTrace();
 		}  
+		// return result; 
 	} 
 }
