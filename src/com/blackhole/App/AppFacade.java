@@ -1,7 +1,5 @@
 package com.blackhole.App;
 
-import java.io.IOException;
-
 import com.blackhole.App.TodosBusiness.todo;
 import com.blackhole.RestRunner.Annotations.DELETE;
 import com.blackhole.RestRunner.Annotations.GET;

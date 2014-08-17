@@ -36,8 +36,6 @@ public class RestServlet extends HttpServlet{
 		 */ 
 		// Transform URI to Path.value param type from annotation 
 		Context c = Context.getInstance(); 
-		c.setRequest(req); 
-		c.setResponse(resp);  
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
         Runner ru = new Runner(AppFacade.class, r.getPath(), r.getVerb());

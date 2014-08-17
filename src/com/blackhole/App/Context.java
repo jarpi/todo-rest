@@ -16,8 +16,6 @@ public class Context {
 	public static Logger mObjLog;  
 	public static MP3PlayerBusiness mObjMP3Player; 
 	private static SQLliteDBImpl mDBConnection;  
-	private HttpServletRequest mRequest; 
-	private HttpServletResponse mResponse; 
 	// TODO: 
 	// - Configure logging instance 
 	// - Encapsulate data access (create new connection to DB) 
@@ -51,30 +49,6 @@ public class Context {
 		Context.mObjMP3Player.startPlayer(url); 
 	} 
 	
-	/* public void stopMP3Player() { 
-		Context.mObjMP3Player.stopPlayer(); 
-		System.out.println("Context stop"); 
-	} */ 
-	
-	/* public void setMP3PlayerVolume(int volume) {  
-		// Context.mObjMP3Player.setVolume(volume);
-	} */ 
-	
-	/* public void increaseVolume() {
-		System.out.println("Context add volume"); 
-		Context.mObjMP3Player.increaseVolume(); 
-	}
-
-	public void decreaseVolume() {
-		System.out.println("Context del volume"); 
-		Context.mObjMP3Player.decreaseVolume(); 
-	} */ 
-
-	
-	/* public boolean isPlayerRunning() {
-		return Context.mObjMP3Player.isPlayerRunning(); 
-	} */ 
-	
 	public Object[] executeQuery(String sql) throws SQLException {
 		return Context.mDBConnection.executeQuery(sql); 
 	} 
@@ -82,18 +56,6 @@ public class Context {
 	public int executeUpdate(String sql) throws SQLException {
 		return Context.mDBConnection.executeUpdate(sql); 
 	} 
-	
-	public void setRequest(HttpServletRequest request) {
-		Context.getInstance().mRequest = request; 
-	}
-	
-	public void setResponse(HttpServletResponse response) {
-		Context.getInstance().mResponse = response; 
-	}
-	
-	public void sendResponse(String result) throws IOException {
-		Context.getInstance().mResponse.getWriter().print(result); 
-	}
 	
 	public String getProperty(String name) {
 		Properties prop = new Properties();
