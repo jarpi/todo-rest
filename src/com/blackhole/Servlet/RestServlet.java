@@ -40,7 +40,12 @@ public class RestServlet extends HttpServlet{
 		c.setResponse(resp);  
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
-        new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
+        Runner ru = new Runner(AppFacade.class, r.getPath(), r.getVerb());
+        try {
+        	ru.exploreAnnotatedClass();
+        }  catch (Exception e) {
+        	e.printStackTrace(); 
+        }
         // if (result != null) resp.getWriter().print(result); 
 	} 
 	
@@ -49,7 +54,12 @@ public class RestServlet extends HttpServlet{
 		Context c = Context.getInstance();  
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
-        new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
+		Runner ru = new Runner(AppFacade.class, r.getPath(), r.getVerb());
+        try {
+        	ru.exploreAnnotatedClass();
+        }  catch (Exception e) {
+        	e.printStackTrace(); 
+        } 
 	} 
 	
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {

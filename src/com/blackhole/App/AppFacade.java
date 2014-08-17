@@ -64,7 +64,7 @@ public class AppFacade {
 	@GET 
 	@PATH(value="/play/flaixfm") 
 	public void playFlaixFmRadio() {
-		this.mObjContext.setNewMP3Player("http://195.10.10.219/flaix/shoutcastmp3.mp3"); 
+		this.mObjContext.setNewMP3Player(this.mObjContext.getProperty("playUrl")); 
 	} 
 	
 	@GET 

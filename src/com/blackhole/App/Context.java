@@ -1,7 +1,9 @@
 package com.blackhole.App;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.*; 
 
 import javax.servlet.http.HttpServletRequest;
@@ -91,6 +93,32 @@ public class Context {
 	
 	public void sendResponse(String result) throws IOException {
 		Context.getInstance().mResponse.getWriter().print(result); 
+	}
+	
+	public String getProperty(String name) {
+		Properties prop = new Properties();
+		InputStream is = null; 
+		String result = ""; 
+		try {
+			is = Context.class.getClassLoader().getResourceAsStream("configuration.properties");
+			prop.load(is); 
+			result = prop.getProperty(name); 
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} 
+		return result; 
+	}
+	
+	public void setPropertyValue(String name, String value) {
+		// TO DO 
 	}
 	
 	public void dispose() {

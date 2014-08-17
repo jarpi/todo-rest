@@ -40,6 +40,7 @@ public class AnnotationModel {
 	public AnnotationType getType() { return this.mType; } 
 	public String getPath() { return this.mPath; }
 	public Object[] getValues() {return this.mParams.toArray(); }
+	public void setValues(Object[] values) {for (int i=0; i<values.length;i++) {this.addValue(values[i]);}} 
 	public void setType(AnnotationType type) {this.mType = type;}
 	public void setPath(String path) {this.mPath = path;}
 	public void setPathMatches(boolean match) {this.mPathMatch = match;}
