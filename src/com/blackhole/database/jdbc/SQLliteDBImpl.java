@@ -37,7 +37,7 @@ public class SQLliteDBImpl {
 	
 	private Connection getConnection() throws SQLException, ClassNotFoundException {
 		Class.forName("org.sqlite.JDBC");
-	    this.mCon = DriverManager.getConnection("jdbc:sqlite:todos.db"); 
+	    this.mCon = DriverManager.getConnection("jdbc:sqlite:/tmp/todos.db"); 
 	    return this.mCon;
 	} 
 	

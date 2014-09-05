@@ -47,20 +47,46 @@ public class Runner {
 		Object result = null; 
 		for (Method m : methodsClassImpl) {  
 			am = this.getModelFromAnnotations(m);  
-			m.toString(); 
-			if (am != null) {
-				if (am.getPathMatches() && am.getValues().length == 0) { 
-					// Run non parameters method method 
-					result = m.invoke(this.annotatedClassToExplore.newInstance()); 
-				} else if (am.getPathMatches() && am.getValues().length > 0 ) {
-					// Run method with parameters 
-					// ... 
-					result = m.invoke(this.annotatedClassToExplore.newInstance(),am.getValues());
+			if (am.getType().toString().equals(this.methodType)) {
+				if (am != null) {
+					if (am.getPathMatches() && am.getValues().length == 0) { 
+						// Run non parameters method method 
+						result = m.invoke(this.annotatedClassToExplore.newInstance()); 
+					} else if (am.getPathMatches() && am.getValues().length > 0 ) {
+						// Run method with parameters 
+						// ... 
+						result = m.invoke(this.annotatedClassToExplore.newInstance(),am.getValues());
+					} 
 				} 
-			} 
-		}  
+			}  
+		} 
 		return result; 
 	}
+	
+	private AnnotationModel getModelFromAnnotations(Method m) { 
+		// Create a model to handle easily each annotation 
+		AnnotationModel modelResult = new AnnotationModel(); 
+		Annotation[] methodAnnotations = m.getDeclaredAnnotations();
+		// 2 Types of annotations: 
+		// 	- HTTP verb annotation - which type of request must be  
+		// 	- PATH annotation - which path must consume 
+		for (Annotation annotation : methodAnnotations) { 
+			if (annotation.annotationType().equals(GET.class) || 
+				annotation.annotationType().equals(POST.class) || 
+				annotation.annotationType().equals(PUT.class) || 
+				annotation.annotationType().equals(DELETE.class)) 
+			{ 
+				modelResult.setType(this.getAnnotationHttpVerb(annotation)); 
+			} else if (annotation.annotationType().equals(PATH.class)) 
+			{ 
+				modelResult.setPath(this.getAnnotationPath(annotation)); 
+				Object[] parameters = this.getAnnotationParameters(m, annotation); 
+				modelResult.setValues(parameters); 
+				modelResult.setPathMatches(this.checkPathMatches(annotation));  
+			} 
+		} 
+		return modelResult; 
+	} 
 	
 	private AnnotationType getAnnotationHttpVerb(Annotation annotation) { 
 		AnnotationType atResult = null; 
@@ -88,75 +114,53 @@ public class Runner {
 		
 		if (paramAnnotations != null && paramAnnotations.length>0) { 
 			// Method has parameters in his annotations 
-			String methodAnnotationPathParameterFields[] =  ((PATH) a).value().split("/");  
+			String annotationTemplate[] =  ((PATH) a).value().split("/");  
 			String pathToSearchParameters[] = this.pathToSearch.split("/"); 
 			
-			if (methodAnnotationPathParameterFields.length == pathToSearchParameters.length) {
+			if (annotationTemplate.length == pathToSearchParameters.length) {
 				// Parameters matches 
-				for (int i=0; i<methodAnnotationPathParameterFields.length;i++) {
-					String annotationField = methodAnnotationPathParameterFields[i]; 
-					String pathField = pathToSearchParameters[i]; 
-					if (annotationField.indexOf("{")>-1) { 
+				for (int i=0; i<annotationTemplate.length;i++) {
+					String annotationTemplateField = annotationTemplate[i]; 
+					String pathToSearchField = pathToSearchParameters[i]; 
+					if (annotationTemplateField.indexOf("{")>-1) { 
 						// Value on path it's a param 
-						paramValuesAnnotationsParsed.add(pathField); 
-					} else {
-						// Value it's a single string, check that matches 
-						if (!annotationField.equals(pathField)) { 
+						paramValuesAnnotationsParsed.add(pathToSearchField); 
+					} else { 
+						// Fields are based on a static URL, check that matches or die  
+						if (!annotationTemplateField.equals(pathToSearchField)) { 
 							paramValuesAnnotationsParsed.clear(); 
 							break; 
 						}
 					} 
 				}
-			}
+			} 
 		} 
 		return paramValuesAnnotationsParsed.toArray();   
 	} 
 	
 	private boolean checkPathMatches(Annotation a) { 
-		PATH annotationPath = (PATH) a;
-		String[] annotationPathArray = ((PATH) a).value().split("/"); 
-		String[] pathToSearchFields = this.pathToSearch.split("/"); 
-		if (annotationPathArray.length == pathToSearchFields.length && annotationPath.value().indexOf("{")==-1) { 
-			for (int i=0; i<pathToSearchFields.length;i++) {
-				if (!annotationPathArray[i].equals(pathToSearchFields[i])) {
+		PATH annotationTemplatePath = (PATH) a;
+		String[] annotationTemplatePathArray = ((PATH) a).value().split("/"); 
+		String[] pathToSearch = this.pathToSearch.split("/"); 
+		if (annotationTemplatePathArray.length == pathToSearch.length && annotationTemplatePath.value().indexOf("{")==-1) { 
+			// Length of template and URL path matches in length values, char "{"==-1 indicates that annotation HAVE NOT parameters, static single URL 
+			for (int i=0; i<pathToSearch.length;i++) { 
+				if (!annotationTemplatePathArray[i].equals(pathToSearch[i])) {
 					return false;
 				} 
 			}  
 			return true; 
-		} else if (annotationPathArray.length == pathToSearchFields.length && annotationPath.value().indexOf("{")>-1) { 
-			for (int i=0; i<pathToSearchFields.length;i++) { 
-				// Check value is not null or empty 
-				if (annotationPathArray[i].toString().indexOf("{")==-1 && !annotationPathArray[i].equals(pathToSearchFields[i])) {
+		} else if (annotationTemplatePathArray.length == pathToSearch.length && annotationTemplatePath.value().indexOf("{")>-1) { 
+			// Length of template and URL path matches in length values, char "{"==-1 indicates that annotation HAVE parameters, static single URL
+			for (int i=0; i<pathToSearch.length;i++) { 
+				if (annotationTemplatePathArray[i].toString().indexOf("{")==-1 && !annotationTemplatePathArray[i].equals(pathToSearch[i])) { 
+					// Field IS NOT a parameter AND static string URL value NOT match  
 					return false; 
 				} 
-			}
+			} 
 			return true; 
 		} 
+		// return false if path it's not found 
 		return false; 
-	} 
-	
-	private AnnotationModel getModelFromAnnotations(Method m) { 
-		// Create a model to handle easily each annotation 
-		AnnotationModel modelResult = new AnnotationModel(); 
-		Annotation[] methodAnnotations = m.getDeclaredAnnotations();
-		// 2 Types of annotations: 
-		// 	- HTTP verb annotation - which type of request must be  
-		// 	- PATH annotation - which path must consume 
-		for (Annotation annotation : methodAnnotations) { 
-			if (annotation.annotationType().equals(GET.class) || 
-				annotation.annotationType().equals(POST.class) || 
-				annotation.annotationType().equals(PUT.class) || 
-				annotation.annotationType().equals(DELETE.class)) 
-			{ 
-				modelResult.setType(this.getAnnotationHttpVerb(annotation)); 
-			} else if (annotation.annotationType().equals(PATH.class)) 
-			{ 
-				modelResult.setPath(this.getAnnotationPath(annotation)); 
-				Object[] parameters = this.getAnnotationParameters(m, annotation); 
-				modelResult.setValues(parameters); 
-				modelResult.setPathMatches(this.checkPathMatches(annotation));  
-			} 
-		} 
-		return modelResult; 
 	} 
 } 

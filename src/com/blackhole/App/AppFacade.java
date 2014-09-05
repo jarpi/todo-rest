@@ -19,14 +19,45 @@ public class AppFacade {
 	
 	@GET 
 	@PATH(value="/getNotes")  
-	public void testing() {System.out.println("AAA");}
+	public String testing() {
+		System.out.println("AAA"); 
+		String result = ""; 
+		todo[] todos = mTodosBusiness.GetTodos(); 
+		if (todos != null) { 
+			for (todo t : todos) {
+				result += t.toString(); 
+				if (result != "") { result = result + ";"; } 
+			} 
+		} 
+		return result; 
+	}
  
+	@GET 
+	@PATH(value="/getFilteredNotes/{rowStart}/{rowOffset}")  
+	public String testingXXX(@PathParam("rowStart") String rowStart, @PathParam("rowOffset") String rowOffset) {  
+		System.out.println("AAA"); 
+		String result = ""; 
+		todo[] todos = mTodosBusiness.GetFilteredTodos(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
+		if (todos != null) { 
+			for (todo t : todos) {
+				result += t.toString(); 
+				if (result != "") { result = result + ";"; } 
+			} 
+		} 
+		return result; 
+	}
+	
 	@GET
 	@PATH(value="/getNote/{id}")   
-	public void testing2(@PathParam("id") String id) 
+	public String testing2(@PathParam("id") String id) 
 	{
+		String result = "No note found"; 
 		System.out.println("BBB " + id); 
 		todo t = mTodosBusiness.GetTodoById(Integer.parseInt(id)); 
+		if (t != null) {
+			result = t.toString(); 
+		} 
+		return result; 
 	}  
 
 	@POST 

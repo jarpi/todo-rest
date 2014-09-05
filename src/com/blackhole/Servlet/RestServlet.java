@@ -35,42 +35,41 @@ public class RestServlet extends HttpServlet{
 		 *  - Scan automatically defined annotations  
 		 */ 
 		// Transform URI to Path.value param type from annotation 
+		this.parseRequestAndProduceResponse(req, resp);
+	} 
+	
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	        throws ServletException, IOException {
+		this.parseRequestAndProduceResponse(req, resp);
+	} 
+	
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+		this.parseRequestAndProduceResponse(req, resp); 
+	}  
+	
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+		this.parseRequestAndProduceResponse(req, resp); 
+	} 
+	
+	private void parseRequestAndProduceResponse(HttpServletRequest req, HttpServletResponse resp) {
+		Object result = null; 
 		Context c = Context.getInstance(); 
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
         Runner ru = new Runner(AppFacade.class, r.getPath(), r.getVerb());
         try {
-        	ru.exploreAnnotatedClass();
-        }  catch (Exception e) {
-        	e.printStackTrace(); 
-        }
-        // if (result != null) resp.getWriter().print(result); 
-	} 
-	
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-	        throws ServletException, IOException {
-		Context c = Context.getInstance();  
-		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
-		Request r = new Request(req);  
-		Runner ru = new Runner(AppFacade.class, r.getPath(), r.getVerb());
-        try {
-        	ru.exploreAnnotatedClass();
+        	result = ru.exploreAnnotatedClass();
         }  catch (Exception e) {
         	e.printStackTrace(); 
         } 
-	} 
-	
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-		Context c = Context.getInstance();  
-		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
-		Request r = new Request(req);  
-        new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
-	}  
-	
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
-		Context c = Context.getInstance();  
-		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
-		Request r = new Request(req);  
-        new Runner(AppFacade.class, r.getPath(), r.getVerb()); 
+        if (result != null) {
+			try {
+				resp.getWriter().write(result.toString()); 
+				resp.getWriter().flush(); 
+				resp.getWriter().close(); 
+			} catch (IOException e) { 
+				e.printStackTrace(); 
+			} 
+        } 
 	} 
 } 
