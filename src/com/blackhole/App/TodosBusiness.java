@@ -4,10 +4,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class TodosBusiness { 
-	// Inner class model 
-	class todo { 
+	// Inner class todo model representation  
+	public class todo { 
 		private int id = 0;  
 		private String title, desc; 
+		private String[] testArr = {"ttt","ttt","ttt"};  
 		public todo(String title, String desc) {this.title = title; this.desc = desc;} 
 		public todo(Object[] todo) {this.id = (int) todo[0]; this.title = (String) todo[1]; this.desc = (String) todo[2];}
 		public todo(int id, String title, String desc) {}
@@ -82,7 +83,7 @@ public class TodosBusiness {
 		return todos.toArray(new todo[]{}); 
 	} 
 	
-	public todo[] GetFilteredTodos(int rowStart, int rowsOffset) { 
+	public todo[] GetTodosByLimit(int rowStart, int rowsOffset) { 
 		ArrayList<todo> todos = new ArrayList<todo>(); 
 		String sql = "SELECT * FROM TODOS LIMIT " + rowStart + "," + rowsOffset;  
 		Object[] result;
@@ -101,5 +102,13 @@ public class TodosBusiness {
 			e.printStackTrace();
 		} 
 		return todos.toArray(new todo[]{}); 
-	}
+	} 
+	
+	public void DeleteTodoById(int id) {
+		String sql = "DELETE FROM todos WHERE id=" + id; 
+	} 
+	
+	public void UpdateTodo(int id, String title, String desc) {
+		String sql = "UPDATE TODO SET title=" + title + ", desc=" + desc + " WHERE id=" + id; 
+	} 
 } 

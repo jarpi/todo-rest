@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.blackhole.App.AppFacade;
-import com.blackhole.App.Context;
+import com.blackhole.App.Context; 
+import com.blackhole.App.TodosBusiness;
+import com.blackhole.App.TodosBusiness.todo;
 import com.blackhole.RestRunner.Runner;
 
 public class RestServlet extends HttpServlet{
@@ -54,6 +56,20 @@ public class RestServlet extends HttpServlet{
 	private void parseRequestAndProduceResponse(HttpServletRequest req, HttpServletResponse resp) {
 		Object result = null; 
 		Context c = Context.getInstance(); 
+		TodosBusiness tb = new TodosBusiness(); 
+		todo t = tb.new todo("AAA", "BBB"); 
+		try {
+			c.mObjUtilsInstance.toJSON(t, t.getClass());
+		} catch (NoSuchFieldException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
         Runner ru = new Runner(AppFacade.class, r.getPath(), r.getVerb());

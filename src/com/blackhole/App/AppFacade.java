@@ -37,9 +37,9 @@ public class AppFacade {
 	public String testingXXX(@PathParam("rowStart") String rowStart, @PathParam("rowOffset") String rowOffset) {  
 		System.out.println("AAA"); 
 		String result = ""; 
-		todo[] todos = mTodosBusiness.GetFilteredTodos(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
+		todo[] todos = mTodosBusiness.GetTodosByLimit(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
 		if (todos != null) { 
-			for (todo t : todos) {
+			for (todo t : todos) { 
 				result += t.toString(); 
 				if (result != "") { result = result + ";"; } 
 			} 

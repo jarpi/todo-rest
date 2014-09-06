@@ -9,6 +9,7 @@ import java.util.logging.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.blackhole.Utils.Utils;
 import com.blackhole.database.jdbc.SQLliteDBImpl;
 
 public class Context {
@@ -16,6 +17,7 @@ public class Context {
 	public static Logger mObjLog;  
 	public static MP3PlayerBusiness mObjMP3Player; 
 	private static SQLliteDBImpl mDBConnection;  
+	public static Utils mObjUtilsInstance; 
 	// TODO: 
 	// - Configure logging instance 
 	// - Encapsulate data access (create new connection to DB) 
@@ -23,6 +25,7 @@ public class Context {
 		Context.mObjLog = Logger.getLogger(Context.class.getName());
 		mObjMP3Player = MP3PlayerBusiness.getInstance(); 
 		mDBConnection = SQLliteDBImpl.getInstance(); 
+		mObjUtilsInstance = Utils.getInstance(); 
 	}  
 	// public MP3Player player = new MP3Player(flaixFMUrl); 
 	
