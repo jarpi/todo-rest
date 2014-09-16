@@ -50,7 +50,7 @@ public class Runner {
 			if (am.getType().toString().equals(this.methodType)) {
 				if (am != null) {
 					if (am.getPathMatches() && am.getValues().length == 0) { 
-						// Run non parameters method method 
+						// Run non parameters method  
 						result = m.invoke(this.annotatedClassToExplore.newInstance()); 
 					} else if (am.getPathMatches() && am.getValues().length > 0 ) {
 						// Run method with parameters 

@@ -6,11 +6,11 @@ import java.util.ArrayList;
 public class Utils {
 	private class FieldType {
 		String mFieldName; 
-		Class mFieldType; 
+		Class<?> mFieldType; 
 		Object mFieldValue; 
-		public FieldType(String fieldName, Class fieldType, Object object) {this.mFieldName = fieldName; this.mFieldType = fieldType; this.mFieldValue = object; } 
+		public FieldType(String fieldName, Class<?> fieldType, Object object) {this.mFieldName = fieldName; this.mFieldType = fieldType; this.mFieldValue = object; } 
 		public String getFieldName() { return this.mFieldName; }
-		public Class getFieldType() {return this.mFieldType; } 
+		public Class<?> getFieldType() {return this.mFieldType; } 
 		public Object getFieldValue() {return this.mFieldValue; } 
 		public String toString() {return this.mFieldName + " " + this.mFieldType + " " + this.mFieldValue;} 
 	} 
@@ -24,8 +24,24 @@ public class Utils {
 		}
 		return Utils.mInstance; 
 	} 
+
 	
-	public String toJSON(Object obj, Class<?> cl) throws Exception { 
+	public String ObjectToJSON(Object[] objArr, Class<?> cl) throws Exception {
+		StringBuilder jsonString = new StringBuilder();
+		jsonString.append("[");
+		for (int i=0; i<objArr.length; i++) { 
+			Object obj = objArr[i]; 
+			String jsonObjStr = this.ObjectToJson(obj, cl); 
+			jsonString.append(jsonObjStr); 
+			if (i<objArr.length-1) {  
+				jsonString.append(","); 
+			} 
+		} 
+		jsonString.append("]");
+		return jsonString.toString(); 
+	}
+	
+	public String ObjectToJson(Object obj, Class<?> cl) throws Exception { 
 		StringBuilder jsonString = new StringBuilder(); 
 		try {
 			getClass().getClassLoader().loadClass(cl.getName());
@@ -80,7 +96,7 @@ public class Utils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		return null; 
+		return jsonString.toString(); 
 	} 
 	
 	private FieldType[] exploreMethodFields(Object objToExplore, Class<?> classType) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {

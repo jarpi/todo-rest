@@ -12,12 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.blackhole.Utils.Utils;
 import com.blackhole.database.jdbc.SQLliteDBImpl;
 
-public class Context {
+public class Context { 
 	private static Context mInstance; 
 	public static Logger mObjLog;  
 	public static MP3PlayerBusiness mObjMP3Player; 
-	private static SQLliteDBImpl mDBConnection;  
+	public static SQLliteDBImpl mDBConnection;  
 	public static Utils mObjUtilsInstance; 
+	public TodosBusiness mTodosBusiness; 
 	// TODO: 
 	// - Configure logging instance 
 	// - Encapsulate data access (create new connection to DB) 
@@ -26,6 +27,7 @@ public class Context {
 		mObjMP3Player = MP3PlayerBusiness.getInstance(); 
 		mDBConnection = SQLliteDBImpl.getInstance(); 
 		mObjUtilsInstance = Utils.getInstance(); 
+		mTodosBusiness = new TodosBusiness(); 
 	}  
 	// public MP3Player player = new MP3Player(flaixFMUrl); 
 	
@@ -51,15 +53,7 @@ public class Context {
 	public void setNewMP3Player(String url) { 
 		Context.mObjMP3Player.startPlayer(url); 
 	} 
-	
-	public Object[] executeQuery(String sql) throws SQLException {
-		return Context.mDBConnection.executeQuery(sql); 
-	} 
-	
-	public int executeUpdate(String sql) throws SQLException {
-		return Context.mDBConnection.executeUpdate(sql); 
-	} 
-	
+		
 	public String getProperty(String name) {
 		Properties prop = new Properties();
 		InputStream is = null; 

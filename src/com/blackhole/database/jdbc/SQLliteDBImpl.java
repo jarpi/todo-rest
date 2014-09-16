@@ -1,5 +1,7 @@
 package com.blackhole.database.jdbc;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement; 
 import java.sql.Connection;
@@ -41,21 +43,13 @@ public class SQLliteDBImpl {
 	    return this.mCon;
 	} 
 	
-	public Object[] executeQuery(String query) throws SQLException { 
+	public Object[] executeQuery(String query, Object[] params) throws SQLException { 
 		ResultSet result = null;  
 		ArrayList<Object[]> resultObj = new ArrayList<Object[]>();   
-		try (Statement stmt = this.mCon.createStatement();) {
+		try { 
+			PreparedStatement stmt = this.mCon.prepareStatement(query);
+			stmt = replaceQueryValuesWithParams(stmt, params); 
 			result = stmt.executeQuery(query); 
-	        /* while (result.next()) {
-	            String coffeeName = result.getString("COF_NAME");
-	            int supplierID = result.getInt("SUP_ID");
-	            float price = result.getFloat("PRICE");
-	            int sales = result.getInt("SALES");
-	            int total = result.getInt("TOTAL");
-	            System.out.println(coffeeName + "\t" + supplierID +
-	                               "\t" + price + "\t" + sales +
-	                               "\t" + total);
-	        } */ 
 			ResultSetMetaData rsmd = result.getMetaData(); 
 			int columnCount = rsmd.getColumnCount(); 
 			while (result.next()) { 
@@ -71,10 +65,42 @@ public class SQLliteDBImpl {
 		return resultObj.toArray();  
 	} 
 	
-	public int executeUpdate(String sql) throws SQLException {
+	public Object[] executeQuery(String query) throws SQLException { 
+		ResultSet result = null;  
+		ArrayList<Object[]> resultObj = new ArrayList<Object[]>();   
+		try (PreparedStatement stmt = this.mCon.prepareStatement(query);){ 
+			result = stmt.executeQuery(query); 
+			ResultSetMetaData rsmd = result.getMetaData(); 
+			int columnCount = rsmd.getColumnCount(); 
+			while (result.next()) { 
+				Object[] objTmp = new Object[columnCount]; 
+				for (int i=0; i<columnCount; i++) {
+					objTmp[i] = result.getObject(i+1); 
+				} 
+				resultObj.add(objTmp); 
+			} 
+		} catch (SQLException e) { 
+			e.printStackTrace(); 
+		} 
+		return resultObj.toArray();  
+	} 
+	
+	public int executeUpdate(String query, Object[] params) throws SQLException { 
 		int result = 0; 
-		try (Statement stmt = this.mCon.createStatement();) {
-	        result = stmt.executeUpdate(sql); 
+		try { 
+			PreparedStatement stmt = this.mCon.prepareStatement(query);
+			stmt = replaceQueryValuesWithParams(stmt, params); 
+	        result = stmt.executeUpdate(query); 
+		} catch (SQLException e ) {
+	        e.printStackTrace(); 
+	    }  
+		return result; 
+	} 
+	
+	public int executeUpdate(String query) throws SQLException { 
+		int result = 0; 
+		try (PreparedStatement stmt = this.mCon.prepareStatement(query);){   
+	        result = stmt.executeUpdate(query); 
 		} catch (SQLException e ) {
 	        e.printStackTrace(); 
 	    }  
@@ -101,6 +127,25 @@ public class SQLliteDBImpl {
 			e.printStackTrace(); 
 		} 
 		return false; 
+	} 
+	
+	public Connection getDBConnection() {
+		return this.mCon; 
+	} 
+	
+	public PreparedStatement replaceQueryValuesWithParams(PreparedStatement stmt, Object[] params) throws SQLException {
+		int paramNumberInQuery = 1; 
+		for (Object objParam : params) {
+			if (objParam.getClass() == Integer.class) {
+				stmt.setInt(paramNumberInQuery, (int) objParam); 
+			} else if (objParam.getClass() == String.class) {
+				stmt.setString(paramNumberInQuery, (String) objParam);
+			} else if (objParam.getClass() == Date.class) {
+				stmt.setDate(paramNumberInQuery, (Date) objParam);
+			} 
+			paramNumberInQuery += 1; 
+		} 
+		return stmt; 
 	} 
 	
 	public void dispose() throws SQLException {

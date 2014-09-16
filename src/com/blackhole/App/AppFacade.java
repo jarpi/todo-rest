@@ -9,8 +9,7 @@ import com.blackhole.RestRunner.Annotations.PUT;
 import com.blackhole.RestRunner.Annotations.PathParam;
 
 public class AppFacade {
-	private Context mObjContext = new Context();  
-	private TodosBusiness mTodosBusiness = new TodosBusiness(); 
+	private Context mObjContext = new Context();   
 	public AppFacade() {} 
 	
  	@GET 
@@ -22,7 +21,7 @@ public class AppFacade {
 	public String testing() {
 		System.out.println("AAA"); 
 		String result = ""; 
-		todo[] todos = mTodosBusiness.GetTodos(); 
+		todo[] todos = mObjContext.mTodosBusiness.GetTodos(); 
 		if (todos != null) { 
 			for (todo t : todos) {
 				result += t.toString(); 
@@ -37,7 +36,7 @@ public class AppFacade {
 	public String testingXXX(@PathParam("rowStart") String rowStart, @PathParam("rowOffset") String rowOffset) {  
 		System.out.println("AAA"); 
 		String result = ""; 
-		todo[] todos = mTodosBusiness.GetTodosByLimit(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
+		todo[] todos = mObjContext.mTodosBusiness.GetTodosByLimit(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
 		if (todos != null) { 
 			for (todo t : todos) { 
 				result += t.toString(); 
@@ -53,7 +52,7 @@ public class AppFacade {
 	{
 		String result = "No note found"; 
 		System.out.println("BBB " + id); 
-		todo t = mTodosBusiness.GetTodoById(Integer.parseInt(id)); 
+		todo t = mObjContext.mTodosBusiness.GetTodoById(Integer.parseInt(id)); 
 		if (t != null) {
 			result = t.toString(); 
 		} 
@@ -65,7 +64,7 @@ public class AppFacade {
 	public void testing5(@PathParam("title") String title, @PathParam("desc") String desc) 
 	{
 		System.out.println("ZZZ");  
-		mTodosBusiness.InsertTodo(title, desc); 
+		mObjContext.mTodosBusiness.InsertTodo(title, desc); 
 	} 
 	
 	@PUT
