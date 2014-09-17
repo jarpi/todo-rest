@@ -27,6 +27,7 @@ public class SQLliteDBImpl {
 			} 
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
+			this.mCon = null; 
 		} 
 	} 
 	
@@ -34,7 +35,11 @@ public class SQLliteDBImpl {
 		if (SQLliteDBImpl.mInstance == null) {
 			SQLliteDBImpl.mInstance = new SQLliteDBImpl(); 
 		} 
-		return SQLliteDBImpl.mInstance;  
+		if (SQLliteDBImpl.mInstance.mCon == null){
+			return null; 
+		} else {
+			return SQLliteDBImpl.mInstance;
+		}  
 	} 
 	
 	private Connection getConnection() throws SQLException, ClassNotFoundException {
@@ -46,21 +51,18 @@ public class SQLliteDBImpl {
 	public Object[] executeQuery(String query, Object[] params) throws SQLException { 
 		ResultSet result = null;  
 		ArrayList<Object[]> resultObj = new ArrayList<Object[]>();   
-		try { 
-			PreparedStatement stmt = this.mCon.prepareStatement(query);
-			stmt = replaceQueryValuesWithParams(stmt, params); 
-			result = stmt.executeQuery(query); 
-			ResultSetMetaData rsmd = result.getMetaData(); 
-			int columnCount = rsmd.getColumnCount(); 
-			while (result.next()) { 
-				Object[] objTmp = new Object[columnCount]; 
-				for (int i=0; i<columnCount; i++) {
-					objTmp[i] = result.getObject(i+1); 
-				} 
-				resultObj.add(objTmp); 
+		PreparedStatement stmt = this.mCon.prepareStatement(query);
+		stmt = replaceQueryValuesWithParams(stmt, params); 
+		// Call to stmt.executeUpdate(query) will override prepared statement 
+		result = stmt.executeQuery(); 
+		ResultSetMetaData rsmd = result.getMetaData(); 
+		int columnCount = rsmd.getColumnCount(); 
+		while (result.next()) { 
+			Object[] objTmp = new Object[columnCount]; 
+			for (int i=0; i<columnCount; i++) {
+				objTmp[i] = result.getObject(i+1); 
 			} 
-		} catch (SQLException e) { 
-			e.printStackTrace(); 
+			resultObj.add(objTmp); 
 		} 
 		return resultObj.toArray();  
 	} 
@@ -68,46 +70,39 @@ public class SQLliteDBImpl {
 	public Object[] executeQuery(String query) throws SQLException { 
 		ResultSet result = null;  
 		ArrayList<Object[]> resultObj = new ArrayList<Object[]>();   
-		try (PreparedStatement stmt = this.mCon.prepareStatement(query);){ 
-			result = stmt.executeQuery(query); 
-			ResultSetMetaData rsmd = result.getMetaData(); 
-			int columnCount = rsmd.getColumnCount(); 
-			while (result.next()) { 
-				Object[] objTmp = new Object[columnCount]; 
-				for (int i=0; i<columnCount; i++) {
-					objTmp[i] = result.getObject(i+1); 
-				} 
-				resultObj.add(objTmp); 
+		PreparedStatement stmt = this.mCon.prepareStatement(query); 
+		// Call to stmt.executeUpdate(query) will override prepared statement 
+		result = stmt.executeQuery(); 
+		ResultSetMetaData rsmd = result.getMetaData(); 
+		int columnCount = rsmd.getColumnCount(); 
+		while (result.next()) { 
+			Object[] objTmp = new Object[columnCount]; 
+			for (int i=0; i<columnCount; i++) {
+				objTmp[i] = result.getObject(i+1); 
 			} 
-		} catch (SQLException e) { 
-			e.printStackTrace(); 
+			resultObj.add(objTmp); 
 		} 
 		return resultObj.toArray();  
 	} 
 	
 	public int executeUpdate(String query, Object[] params) throws SQLException { 
 		int result = 0; 
-		try { 
-			PreparedStatement stmt = this.mCon.prepareStatement(query);
-			stmt = replaceQueryValuesWithParams(stmt, params); 
-	        result = stmt.executeUpdate(query); 
-		} catch (SQLException e ) {
-	        e.printStackTrace(); 
-	    }  
+		PreparedStatement stmt = this.mCon.prepareStatement(query);
+		stmt = replaceQueryValuesWithParams(stmt, params); 
+		// Call to stmt.executeUpdate(query) will override prepared statement 
+        result = stmt.executeUpdate(); 
 		return result; 
 	} 
 	
 	public int executeUpdate(String query) throws SQLException { 
-		int result = 0; 
-		try (PreparedStatement stmt = this.mCon.prepareStatement(query);){   
-	        result = stmt.executeUpdate(query); 
-		} catch (SQLException e ) {
-	        e.printStackTrace(); 
-	    }  
+		PreparedStatement stmt = this.mCon.prepareStatement(query); 
+		// Call to stmt.executeUpdate(query) will override prepared statement 
+	    int result = stmt.executeUpdate();  
 		return result; 
 	} 
 	
-	private boolean tableExists(String tableName) {
+	private boolean tableExists(String tableName) { 
+		boolean result = false; 
 		if (tableName == null || this.mCon == null) 
 	    {
 	        return false;
@@ -117,16 +112,13 @@ public class SQLliteDBImpl {
 		try { 
 			stmt = this.mCon.createStatement(); 
 			ResultSet rs = stmt.executeQuery(testExistsTableSql); 
-			rs.next(); 
-			int result = rs.getInt(1);  
-			if (result == 0) return false; 
+			result = rs.next();  
 			rs.close(); 
 			stmt.close();  
-			return true; 
 		} catch (SQLException e) {
 			e.printStackTrace(); 
 		} 
-		return false; 
+		return result; 
 	} 
 	
 	public Connection getDBConnection() {

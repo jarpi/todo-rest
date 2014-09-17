@@ -9,7 +9,14 @@ public class TodosBusiness {
 		// Properties of inner class 
 		private int id = 0;  
 		private String title, desc; 
-		private String[] testArr = {"ttt","ttt","ttt"}; 
+		private String[] testArr = {"ttt","ttt","ttt"};
+		private String[] testArr2 = {"aaa","aaa","aaa"}; 
+		private String[] testArr3 = {"bbb","bbb","bbb"}; 
+		private Integer[] testIntArr = {1,1,1};
+		private Integer[] testIntArr2 = {2,2,2,2,2}; 
+		private Integer[] testIntArr3 = {3,3,3,3,3,3,3}; 
+		private String[][] testArrList = {testArr,testArr2,testArr3};
+		private Integer[][] testIntArrList = {testIntArr,testIntArr2,testIntArr3}; // TODO object to json must convert array of arrays  
 		// Constructor by simple strings 
 		public todo(String title, String desc) {this.title = title; this.desc = desc;} 
 		// Constructor by array of objects (obj[0] == title, ...) 
@@ -23,9 +30,12 @@ public class TodosBusiness {
 		public void setDesc(String desc) {this.desc = desc;} 
 		// CRUD methods 
 		public int InsertTodoToDb() throws SQLException {
-			String sql = "INSERT INTO TODOS (title, desc) VALUES('" + this.title + "','" + this.desc + "')";
+			String sql = "INSERT INTO TODOS (title, desc) VALUES(?,?)"; 
+			ArrayList<Object> objParams = new ArrayList<Object>(); 
+			objParams.add(this.title); 
+			objParams.add(this.desc);
 			int result = 0; 
-			result = Context.mDBConnection.executeUpdate(sql); 
+			result = Context.mDBConnection.executeUpdate(sql,objParams.toArray(new Object[]{})); 
 			return result; 
 		} 
 		public int UpdateTodo() throws SQLException { 
@@ -71,8 +81,9 @@ public class TodosBusiness {
 			result = Context.mDBConnection.executeQuery(sql, objParams.toArray(new Object[]{}));  
 			if (result.length > 0) { 
 				for (int i=0; i<result.length; i++) { 
+					// a == row 
 					Object[] a = (Object[]) result[i];
-					a[0].toString(); 
+					// Create todo from row 
 					t = new todo(a);  
 				} 
 			} 

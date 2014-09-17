@@ -45,7 +45,7 @@ public class Utils {
 		StringBuilder jsonString = new StringBuilder(); 
 		try {
 			getClass().getClassLoader().loadClass(cl.getName());
-			FieldType[] fieldsModel = this.exploreMethodFields(obj, cl); 
+			FieldType[] fieldsModel = this.exploreMethodFields(obj, cl);  
 			jsonString.append("{"); 
 			int numberOfFieldsProcessed = 0; 
 			for (FieldType f : fieldsModel) {  
@@ -54,6 +54,37 @@ public class Utils {
 					String[] values = (String[]) f.getFieldValue(); 
 					for (int i=0; i<values.length; i++) { 
 						jsonString.append("\"" + values[i] + "\""); 
+						if (i<values.length-1) jsonString.append(","); 
+					} 
+					jsonString.append("]");  
+					numberOfFieldsProcessed +=1;
+				} else if (f.getFieldType() == String[][].class) { 
+					jsonString.append("\"" + f.getFieldName() + "\":["); 
+					String[][] values = (String[][]) f.getFieldValue();
+					for (int i=0; i<values.length; i++) {
+						jsonString.append("["); 
+						String[] valuesInnerArr = (String[]) values[i]; 
+						for (int j=0; j<valuesInnerArr.length; j++) { 
+							jsonString.append("\"" + valuesInnerArr[j] + "\""); 
+							if (j<valuesInnerArr.length-1) jsonString.append(",");
+						}
+						jsonString.append("]");
+						if (i<values.length-1) jsonString.append(","); 
+					} 
+					jsonString.append("]");  
+					numberOfFieldsProcessed +=1;
+				} else if (f.getFieldType() == Integer[][].class) { 
+					jsonString.append("\"" + f.getFieldName() + "\":["); 
+					Integer[][] values = (Integer[][]) f.getFieldValue();
+					for (int i=0; i<values.length; i++) {
+						jsonString.append("["); 
+						Integer[] valuesInnerArr = (Integer[]) values[i];
+						for (int j=0; j<valuesInnerArr.length; j++) { 
+							jsonString.append("\"" + valuesInnerArr[j] + "\""); 
+							if (j<valuesInnerArr.length-1) jsonString.append(",");
+						} 
+						jsonString.append("]");
+						// jsonString.append("\"" + values[i] + "\""); 
 						if (i<values.length-1) jsonString.append(","); 
 					} 
 					jsonString.append("]");  
@@ -105,6 +136,7 @@ public class Utils {
 		for (Field classTypeField : classTypeFields) { 
 			if ((classTypeField.getName().indexOf("this") == -1)) {
 				Field objField = objToExplore.getClass().getDeclaredField(classTypeField.getName());
+				// When a class is declared private, cannot access it's properties 
 				objField.setAccessible(true); 
 				// System.out.println("Field: " + field.getName() + " Type: " + field.getType()); 
 				FieldType ft = new FieldType(objField.getName(), objField.getType(), objField.get(objToExplore));

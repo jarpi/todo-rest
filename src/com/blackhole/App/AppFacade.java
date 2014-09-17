@@ -35,9 +35,9 @@ public class AppFacade {
 	@PATH(value="/getFilteredNotes/{rowStart}/{rowOffset}")  
 	public String testingXXX(@PathParam("rowStart") String rowStart, @PathParam("rowOffset") String rowOffset) {  
 		System.out.println("AAA"); 
-		String result = ""; 
+		String result = "No results found"; 
 		todo[] todos = mObjContext.mTodosBusiness.GetTodosByLimit(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
-		if (todos != null) { 
+		if (todos != null && todos.length>0) { 
 			for (todo t : todos) { 
 				result += t.toString(); 
 				if (result != "") { result = result + ";"; } 
@@ -53,8 +53,13 @@ public class AppFacade {
 		String result = "No note found"; 
 		System.out.println("BBB " + id); 
 		todo t = mObjContext.mTodosBusiness.GetTodoById(Integer.parseInt(id)); 
-		if (t != null) {
-			result = t.toString(); 
+		if (t != null) { 
+			try {
+				result = mObjContext.mObjUtilsInstance.ObjectToJson(t, todo.class);
+			} catch (Exception e) {
+				e.printStackTrace(); 
+				result = "Error ocurred while converting to JSON"; 
+			} 
 		} 
 		return result; 
 	}  
