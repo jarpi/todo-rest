@@ -2,6 +2,7 @@ package com.blackhole.App;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TodosBusiness { 
 	// Inner class todo model representation  
@@ -9,16 +10,19 @@ public class TodosBusiness {
 		// Properties of inner class 
 		private int id = 0;  
 		private String title, desc; 
-		private String[] testArr = {"ttt","ttt","ttt"};
+		private HashMap<String,String> h = new HashMap<String, String>();  
+		/* private String[] testArr = {"ttt","ttt","ttt"};
 		private String[] testArr2 = {"aaa","aaa","aaa"}; 
 		private String[] testArr3 = {"bbb","bbb","bbb"}; 
 		private Integer[] testIntArr = {1,1,1};
 		private Integer[] testIntArr2 = {2,2,2,2,2}; 
 		private Integer[] testIntArr3 = {3,3,3,3,3,3,3}; 
 		private String[][] testArrList = {testArr,testArr2,testArr3};
-		private Integer[][] testIntArrList = {testIntArr,testIntArr2,testIntArr3}; // TODO object to json must convert array of arrays  
-		// Constructor by simple strings 
-		public todo(String title, String desc) {this.title = title; this.desc = desc;} 
+		private String[][] testArrList2 = {testArr,testArr2,testArr3};
+		private Integer[][] testIntArrList = {testIntArr,testIntArr2,testIntArr3}; // TODO object to json must convert array of arrays
+		private String[][][] testAAA = {testArrList,testArrList2};    */ 
+		// Inner class constructor, todo: this must be converted to a generic data container 
+		public todo(String title, String desc) {this.h.put("AAA", "BBB"); this.title = title; this.desc = desc;} 
 		// Constructor by array of objects (obj[0] == title, ...) 
 		public todo(Object[] todo) {this.id = (int) todo[0]; this.title = (String) todo[1]; this.desc = (String) todo[2];}
 		// Methods for accesing properties 
@@ -56,7 +60,8 @@ public class TodosBusiness {
 			result = Context.mDBConnection.executeUpdate(sql, objParams.toArray(new Object[]{}));
 			return result; 
 		} 
-	} 
+	}
+
 	
 	public TodosBusiness() {} 
 	

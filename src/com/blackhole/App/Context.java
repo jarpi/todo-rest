@@ -2,12 +2,9 @@ package com.blackhole.App;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.*; 
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.blackhole.Utils.Utils;
 import com.blackhole.database.jdbc.SQLliteDBImpl;
@@ -18,18 +15,14 @@ public class Context {
 	public static MP3PlayerBusiness mObjMP3Player; 
 	public static SQLliteDBImpl mDBConnection;  
 	public static Utils mObjUtilsInstance; 
-	public TodosBusiness mTodosBusiness; 
 	// TODO: 
 	// - Configure logging instance 
 	// - Encapsulate data access (create new connection to DB) 
-	protected Context() { 
-		Context.mObjLog = Logger.getLogger(Context.class.getName());
-		mObjMP3Player = MP3PlayerBusiness.getInstance(); 
+	public Context() { 
+		Context.mObjLog = Logger.getLogger(Context.class.getName());  
 		mDBConnection = SQLliteDBImpl.getInstance(); 
 		mObjUtilsInstance = Utils.getInstance(); 
-		mTodosBusiness = new TodosBusiness(); 
 	}  
-	// public MP3Player player = new MP3Player(flaixFMUrl); 
 	
 	public static Context getInstance() {
 		if (Context.mInstance == null) {
@@ -78,10 +71,26 @@ public class Context {
 	
 	public void setPropertyValue(String name, String value) {
 		// TO DO 
+		Properties prop = new Properties();
+		InputStream is = null; 
+		try {
+			is = Context.class.getClassLoader().getResourceAsStream("configuration.properties");
+			prop.load(is); 
+			prop.setProperty(name, value);  
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} 
 	}
 	
 	public void dispose() {
 		Context.mObjLog = null; 
-		// Context.mObjMP3Player.stopPlayer();  
 	} 
 }

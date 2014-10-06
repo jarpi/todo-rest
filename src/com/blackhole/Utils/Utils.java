@@ -2,6 +2,10 @@ package com.blackhole.Utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Utils {
 	private class FieldType {
@@ -26,12 +30,12 @@ public class Utils {
 	} 
 
 	
-	public String ObjectToJSON(Object[] objArr, Class<?> cl) throws Exception {
+	public String ObjectToJSON(Object[] objArr) throws Exception {
 		StringBuilder jsonString = new StringBuilder();
 		jsonString.append("[");
 		for (int i=0; i<objArr.length; i++) { 
 			Object obj = objArr[i]; 
-			String jsonObjStr = this.ObjectToJson(obj, cl); 
+			String jsonObjStr = this.ObjectToJson(obj); 
 			jsonString.append(jsonObjStr); 
 			if (i<objArr.length-1) {  
 				jsonString.append(","); 
@@ -41,11 +45,11 @@ public class Utils {
 		return jsonString.toString(); 
 	}
 	
-	public String ObjectToJson(Object obj, Class<?> cl) throws Exception { 
+	public String ObjectToJson(Object obj) { 
 		StringBuilder jsonString = new StringBuilder(); 
-		try {
-			getClass().getClassLoader().loadClass(cl.getName());
-			FieldType[] fieldsModel = this.exploreMethodFields(obj, cl);  
+		try { 
+			getClass().getClassLoader().loadClass(obj.getClass().getName());
+			FieldType[] fieldsModel = this.exploreMethodFields(obj);  
 			jsonString.append("{"); 
 			int numberOfFieldsProcessed = 0; 
 			for (FieldType f : fieldsModel) {  
@@ -57,8 +61,21 @@ public class Utils {
 						if (i<values.length-1) jsonString.append(","); 
 					} 
 					jsonString.append("]");  
-					numberOfFieldsProcessed +=1;
-				} else if (f.getFieldType() == String[][].class) { 
+					numberOfFieldsProcessed +=1; 
+				} else if(f.getFieldType() == HashMap.class) {
+					jsonString.append("\"" + f.getFieldName() + "\":{"); 
+					HashMap<?,?> tempHashMap = (HashMap<?, ?>) f.getFieldValue(); 
+					int mapLength = tempHashMap.keySet().toArray().length; 
+					int i = 0; 
+					for (Entry<?, ?> entry : tempHashMap.entrySet()) {
+						i += 1; 
+						jsonString.append("\"" + entry.getKey() + "\":"); 
+						jsonString.append("\"" + entry.getValue() + "\""); 
+						if (i<mapLength) jsonString.append(","); 
+					} 
+					jsonString.append("}"); 
+					numberOfFieldsProcessed +=1; 
+				} else if (f.getFieldType() == String[][].class) {
 					jsonString.append("\"" + f.getFieldName() + "\":["); 
 					String[][] values = (String[][]) f.getFieldValue();
 					for (int i=0; i<values.length; i++) {
@@ -83,8 +100,7 @@ public class Utils {
 							jsonString.append("\"" + valuesInnerArr[j] + "\""); 
 							if (j<valuesInnerArr.length-1) jsonString.append(",");
 						} 
-						jsonString.append("]");
-						// jsonString.append("\"" + values[i] + "\""); 
+						jsonString.append("]"); 
 						if (i<values.length-1) jsonString.append(","); 
 					} 
 					jsonString.append("]");  
@@ -111,7 +127,7 @@ public class Utils {
 					jsonString.append("\"" + f.getFieldValue() + "\"");
 					numberOfFieldsProcessed +=1;
 				}  else {
-					throw new Exception("Cannot recognize field type: " + f.toString()); 
+					throw new IllegalArgumentException("Cannot recognize field type: " + f.toString()); 
 				} 
 				if (numberOfFieldsProcessed < fieldsModel.length) {
 					jsonString.append(","); 
@@ -119,19 +135,35 @@ public class Utils {
 			} 
 			jsonString.append("}");
 		} catch (ClassNotFoundException e) {
+			jsonString.delete(0, jsonString.length()); 
+			jsonString.append("ClassNotFoundException Ocurred");
 			e.printStackTrace(); 
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
+			jsonString.delete(0, jsonString.length()); 
+			jsonString.append("IllegalArgumentException Ocurred"); 
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
+			jsonString.delete(0, jsonString.length()); 
+			jsonString.append("IllegalAccessException Ocurred"); 
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			jsonString.delete(0, jsonString.length()); 
+			jsonString.append("NoSuchFieldException Ocurred"); 
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			jsonString.delete(0, jsonString.length()); 
+			jsonString.append("SecurityException Ocurred"); 
 			e.printStackTrace();
 		} 
 		return jsonString.toString(); 
 	} 
 	
-	private FieldType[] exploreMethodFields(Object objToExplore, Class<?> classType) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-		Field[] classTypeFields = classType.getDeclaredFields(); 
+	private FieldType[] exploreMethodFields(Object objToExplore) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		// Field[] classTypeFields = classType.getDeclaredFields();
+		Field[] classTypeFields = objToExplore.getClass().getDeclaredFields(); 
 		ArrayList<FieldType> fieldTypeArr = new ArrayList<FieldType>(); 
 		for (Field classTypeField : classTypeFields) { 
 			if ((classTypeField.getName().indexOf("this") == -1)) {

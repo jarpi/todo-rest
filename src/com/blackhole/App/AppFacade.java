@@ -1,5 +1,7 @@
 package com.blackhole.App;
 
+import java.util.HashMap;
+
 import com.blackhole.App.TodosBusiness.todo;
 import com.blackhole.RestRunner.Annotations.DELETE;
 import com.blackhole.RestRunner.Annotations.GET;
@@ -8,8 +10,14 @@ import com.blackhole.RestRunner.Annotations.PATH;
 import com.blackhole.RestRunner.Annotations.PUT;
 import com.blackhole.RestRunner.Annotations.PathParam;
 
-public class AppFacade {
-	private Context mObjContext = new Context();   
+public class AppFacade { 
+	private class ErrorDataContainer {
+		public HashMap<String, Object> errors = new HashMap<String, Object>();
+		// ... 
+		// Hashmap<String, Object> data ... 
+		public ErrorDataContainer(String field, String message) {this.errors.put(field, message);} 
+	} 
+	private Context mObjContext = Context.getInstance();    
 	public AppFacade() {} 
 	
  	@GET 
@@ -21,13 +29,15 @@ public class AppFacade {
 	public String testing() {
 		System.out.println("AAA"); 
 		String result = ""; 
-		todo[] todos = mObjContext.mTodosBusiness.GetTodos(); 
+		TodosBusiness tb = new TodosBusiness();
+		todo[] todos = tb.GetTodos(); 
 		if (todos != null) { 
 			for (todo t : todos) {
 				result += t.toString(); 
 				if (result != "") { result = result + ";"; } 
 			} 
 		} 
+		tb = null; 
 		return result; 
 	}
  
@@ -36,13 +46,15 @@ public class AppFacade {
 	public String testingXXX(@PathParam("rowStart") String rowStart, @PathParam("rowOffset") String rowOffset) {  
 		System.out.println("AAA"); 
 		String result = "No results found"; 
-		todo[] todos = mObjContext.mTodosBusiness.GetTodosByLimit(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
+		TodosBusiness tb = new TodosBusiness();
+		todo[] todos = tb.GetTodosByLimit(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
 		if (todos != null && todos.length>0) { 
 			for (todo t : todos) { 
 				result += t.toString(); 
 				if (result != "") { result = result + ";"; } 
 			} 
 		} 
+		tb = null; 
 		return result; 
 	}
 	
@@ -50,18 +62,20 @@ public class AppFacade {
 	@PATH(value="/getNote/{id}")   
 	public String testing2(@PathParam("id") String id) 
 	{
-		String result = "No note found"; 
+		Object result = new ErrorDataContainer("message", "No note found");  
 		System.out.println("BBB " + id); 
-		todo t = mObjContext.mTodosBusiness.GetTodoById(Integer.parseInt(id)); 
+		TodosBusiness tb = new TodosBusiness(); 
+		todo t = tb.GetTodoById(Integer.parseInt(id)); 
 		if (t != null) { 
 			try {
-				result = mObjContext.mObjUtilsInstance.ObjectToJson(t, todo.class);
-			} catch (Exception e) {
+				result = t;  
+			} catch (Exception e) { 
 				e.printStackTrace(); 
-				result = "Error ocurred while converting to JSON"; 
+				result = new ErrorDataContainer("message", "Error ocurred while converting to JSON");  
 			} 
 		} 
-		return result; 
+		tb = null; 
+		return Context.mObjUtilsInstance.ObjectToJson(result);  
 	}  
 
 	@POST 
@@ -69,7 +83,9 @@ public class AppFacade {
 	public void testing5(@PathParam("title") String title, @PathParam("desc") String desc) 
 	{
 		System.out.println("ZZZ");  
-		mObjContext.mTodosBusiness.InsertTodo(title, desc); 
+		TodosBusiness tb = new TodosBusiness(); 
+		tb.InsertTodo(title, desc);  
+		tb = null; 
 	} 
 	
 	@PUT
@@ -82,16 +98,17 @@ public class AppFacade {
 	
 	@GET 
 	@PATH(value="/player/isrunning") 
-	public boolean isPlayerRunning() {
+	public String isPlayerRunning() {
 		boolean isRunning = Context.mObjMP3Player.isPlayerRunning();
+		String result = ""; 
 		try { 
-			this.mObjContext.logInfo(String.valueOf(isRunning));  
-			// this.mObjContext.sendResponse(String.valueOf(isRunning)); 
-			return isRunning; 
+			this.mObjContext.logInfo(String.valueOf(isRunning));
+			result = Context.mObjUtilsInstance.ObjectToJson(isRunning);
 		} catch (Exception e) {
+			result = Context.mObjUtilsInstance.ObjectToJson("Exception ocurred while converting to JSON: " + e.getStackTrace()); 
 			e.printStackTrace();  
-		}
-		return false; 
+		} 
+		return result; // Fix that 
 	} 
 	
 	@GET 

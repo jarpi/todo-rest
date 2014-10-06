@@ -56,12 +56,12 @@ public class RestServlet extends HttpServlet{
 	private void parseRequestAndProduceResponse(HttpServletRequest req, HttpServletResponse resp) {
 		Object result = null; 
 		Context c = Context.getInstance(); 
-		/* TodosBusiness tb = new TodosBusiness(); 
+		TodosBusiness tb = new TodosBusiness(); 
 		todo t = tb.new todo("AAA", "BBB"); 
 		todo t1 = tb.new todo("CCC", "DDD");
 		todo t2 = tb.new todo("EEE", "FFF"); 
 		try {
-			c.mObjUtilsInstance.ObjectToJSON(new todo[]{t,t1,t2}, t.getClass());
+			c.mObjUtilsInstance.ObjectToJSON(new todo[]{t,t1,t2});
 		} catch (NoSuchFieldException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -71,7 +71,7 @@ public class RestServlet extends HttpServlet{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} */ 
+		} 
 		c.logInfo("Starting GET Request|Time: " + "|IP:" + "|Request: "); 
 		Request r = new Request(req);  
         Runner ru = new Runner(AppFacade.class, r.getPath(), r.getVerb());
@@ -91,3 +91,5 @@ public class RestServlet extends HttpServlet{
         } 
 	} 
 } 
+
+
