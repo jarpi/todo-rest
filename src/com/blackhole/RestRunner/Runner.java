@@ -1,6 +1,7 @@
 package com.blackhole.RestRunner;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,15 +30,37 @@ public class Runner {
 	private Class<?> annotatedClassToExplore = null; 
 	private String pathToSearch = null; 
 	private String methodType = null; 
+	private Object instantiatedClass = null; 
 	
-	public  Runner(Class<?> annotatedClass, String pathToSearch, String methodType) { 
+	public  Runner(Class<?> annotatedClass, String pathToSearch, String methodType, Object instanceArguments[]) { 
 		this.annotatedClassToExplore = annotatedClass; 
 		this.pathToSearch = pathToSearch; 
 		this.methodType = methodType; 
 		try {
-			getClass().getClassLoader().loadClass(annotatedClass.getName()); 
+			Class<?> tmpClass = (Class<?>) Class.forName(annotatedClass.getName());
+			Constructor<?> ctor = tmpClass.getDeclaredConstructor(Context.class);
+			ctor.setAccessible(true);
+			this.instantiatedClass = ctor.newInstance(instanceArguments);  
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace(); 
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	} 
 	
@@ -51,17 +74,19 @@ public class Runner {
 				if (am != null) {
 					if (am.getPathMatches() && am.getValues().length == 0) { 
 						// Run non parameters method  
-						result = m.invoke(this.annotatedClassToExplore.newInstance()); 
+						// result = m.invoke(this.annotatedClassToExplore.newInstance()); 
+						result = m.invoke(this.instantiatedClass);
 					} else if (am.getPathMatches() && am.getValues().length > 0 ) {
 						// Run method with parameters 
 						// ... 
-						result = m.invoke(this.annotatedClassToExplore.newInstance(),am.getValues());
+						// result = m.invoke(this.instantiatedClass,this.annotatedClassToExplore.newInstance(),am.getValues());
+						result = m.invoke(this.instantiatedClass,am.getValues());
 					} 
 				} 
 			}  
 		} 
 		return result; 
-	}
+	} 
 	
 	private AnnotationModel getModelFromAnnotations(Method m) { 
 		// Create a model to handle easily each annotation 

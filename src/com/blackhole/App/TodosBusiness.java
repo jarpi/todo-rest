@@ -5,22 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TodosBusiness { 
+	private Context mObjContext = null; 
 	// Inner class todo model representation  
 	public class todo { 
 		// Properties of inner class 
 		private int id = 0;  
 		private String title, desc; 
 		private HashMap<String,String> h = new HashMap<String, String>();  
-		/* private String[] testArr = {"ttt","ttt","ttt"};
-		private String[] testArr2 = {"aaa","aaa","aaa"}; 
-		private String[] testArr3 = {"bbb","bbb","bbb"}; 
-		private Integer[] testIntArr = {1,1,1};
-		private Integer[] testIntArr2 = {2,2,2,2,2}; 
-		private Integer[] testIntArr3 = {3,3,3,3,3,3,3}; 
-		private String[][] testArrList = {testArr,testArr2,testArr3};
-		private String[][] testArrList2 = {testArr,testArr2,testArr3};
-		private Integer[][] testIntArrList = {testIntArr,testIntArr2,testIntArr3}; // TODO object to json must convert array of arrays
-		private String[][][] testAAA = {testArrList,testArrList2};    */ 
 		// Inner class constructor, todo: this must be converted to a generic data container 
 		public todo(String title, String desc) {this.h.put("AAA", "BBB"); this.title = title; this.desc = desc;} 
 		// Constructor by array of objects (obj[0] == title, ...) 
@@ -39,7 +30,7 @@ public class TodosBusiness {
 			objParams.add(this.title); 
 			objParams.add(this.desc);
 			int result = 0; 
-			result = Context.mDBConnection.executeUpdate(sql,objParams.toArray(new Object[]{})); 
+			result = mObjContext.mDBConnection.executeUpdate(sql,objParams.toArray(new Object[]{})); 
 			return result; 
 		} 
 		public int UpdateTodo() throws SQLException { 
@@ -49,7 +40,7 @@ public class TodosBusiness {
 			objParams.add(this.title); 
 			objParams.add(this.desc); 
 			int result = 0; 
-			result = Context.mDBConnection.executeUpdate(sql, objParams.toArray(new Object[]{}));
+			result = mObjContext.mDBConnection.executeUpdate(sql, objParams.toArray(new Object[]{}));
 			return result; 
 		} 
 		public int DeleteTodo() throws SQLException {
@@ -57,13 +48,13 @@ public class TodosBusiness {
 			ArrayList<Object> objParams = new ArrayList<Object>(); 
 			objParams.add(this.id);  
 			int result = 0; 
-			result = Context.mDBConnection.executeUpdate(sql, objParams.toArray(new Object[]{}));
+			result = mObjContext.mDBConnection.executeUpdate(sql, objParams.toArray(new Object[]{}));
 			return result; 
 		} 
 	}
 
 	
-	public TodosBusiness() {} 
+	public TodosBusiness(Context c) {this.mObjContext = c;} 
 	
 	public boolean InsertTodo(String title, String desc) {
 		todo t = new todo(title, desc);
@@ -83,7 +74,7 @@ public class TodosBusiness {
 		Object[] result;
 		todo t = null; 
 		try { 
-			result = Context.mDBConnection.executeQuery(sql, objParams.toArray(new Object[]{}));  
+			result = mObjContext.mDBConnection.executeQuery(sql, objParams.toArray(new Object[]{}));  
 			if (result.length > 0) { 
 				for (int i=0; i<result.length; i++) { 
 					// a == row 
@@ -105,7 +96,7 @@ public class TodosBusiness {
 		Object[] result;
 		todo t = null; 
 		try {
-			result = Context.mDBConnection.executeQuery(sql);  
+			result = mObjContext.mDBConnection.executeQuery(sql);  
 			if (result.length > 0) {
 				for (int i=0; i<result.length; i++) { 
 					Object[] row = (Object[]) result[i]; 
@@ -129,7 +120,7 @@ public class TodosBusiness {
 		Object[] result;
 		todo t = null; 
 		try {
-			result = Context.mDBConnection.executeQuery(sql, objParams.toArray(new Object[]{}));  
+			result = mObjContext.mDBConnection.executeQuery(sql, objParams.toArray(new Object[]{}));  
 			if (result.length > 0) { 
 				for (int i=0; i<result.length; i++) { 
 					Object[] row = (Object[]) result[i]; 

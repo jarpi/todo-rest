@@ -10,11 +10,11 @@ import com.blackhole.Utils.Utils;
 import com.blackhole.database.jdbc.SQLliteDBImpl;
 
 public class Context { 
-	private static Context mInstance; 
+	// private static Context mInstance; 
 	public static Logger mObjLog;  
-	public static MP3PlayerBusiness mObjMP3Player; 
-	public static SQLliteDBImpl mDBConnection;  
-	public static Utils mObjUtilsInstance; 
+	public MP3PlayerBusiness mObjMP3Player; 
+	public SQLliteDBImpl mDBConnection;  
+	public Utils mObjUtilsInstance; 
 	// TODO: 
 	// - Configure logging instance 
 	// - Encapsulate data access (create new connection to DB) 
@@ -22,14 +22,15 @@ public class Context {
 		Context.mObjLog = Logger.getLogger(Context.class.getName());  
 		mDBConnection = SQLliteDBImpl.getInstance(); 
 		mObjUtilsInstance = Utils.getInstance(); 
+		mObjMP3Player = MP3PlayerBusiness.getInstance(); 
 	}  
 	
-	public static Context getInstance() {
+/* 	public static Context getInstance() {
 		if (Context.mInstance == null) {
 			Context.mInstance = new Context(); 
 		} 
 		return Context.mInstance; 
-	}
+	} */ 
 	
 	public void logInfo(String msg) {
 		Context.mObjLog.log(Level.INFO, msg); 
@@ -44,7 +45,7 @@ public class Context {
 	}
 	
 	public void setNewMP3Player(String url) { 
-		Context.mObjMP3Player.startPlayer(url); 
+		this.mObjMP3Player.startPlayer(url); 
 	} 
 		
 	public String getProperty(String name) {
@@ -92,5 +93,7 @@ public class Context {
 	
 	public void dispose() {
 		Context.mObjLog = null; 
+		this.mObjMP3Player = null; 
+		this.mDBConnection.dispose(); 
 	} 
 }

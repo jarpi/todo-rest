@@ -140,8 +140,12 @@ public class SQLliteDBImpl {
 		return stmt; 
 	} 
 	
-	public void dispose() throws SQLException {
-		this.mCon.close(); 
+	public void dispose() {
+		try {
+			this.mCon.close();
+		} catch (SQLException e) { 
+			e.printStackTrace();
+		} 
 		this.mCon = null; 
 	}
 }

@@ -3,9 +3,9 @@ package com.blackhole.Utils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+
+import com.blackhole.App.AppFacade.KeyValueDataContainer;
 
 public class Utils {
 	private class FieldType {
@@ -45,93 +45,23 @@ public class Utils {
 		return jsonString.toString(); 
 	}
 	
+	public String DataContainerToJson(KeyValueDataContainer dc) {
+		// TODO 
+		return null; 
+	}
+	
 	public String ObjectToJson(Object obj) { 
 		StringBuilder jsonString = new StringBuilder(); 
 		try { 
 			getClass().getClassLoader().loadClass(obj.getClass().getName());
-			FieldType[] fieldsModel = this.exploreMethodFields(obj);  
+			FieldType[] fieldsModel = this.getObjectFields(obj);  
 			jsonString.append("{"); 
 			int numberOfFieldsProcessed = 0; 
 			for (FieldType f : fieldsModel) {  
-				if (f.getFieldType() == String[].class) { 
-					jsonString.append("\"" + f.getFieldName() + "\":["); 
-					String[] values = (String[]) f.getFieldValue(); 
-					for (int i=0; i<values.length; i++) { 
-						jsonString.append("\"" + values[i] + "\""); 
-						if (i<values.length-1) jsonString.append(","); 
-					} 
-					jsonString.append("]");  
-					numberOfFieldsProcessed +=1; 
-				} else if(f.getFieldType() == HashMap.class) {
-					jsonString.append("\"" + f.getFieldName() + "\":{"); 
-					HashMap<?,?> tempHashMap = (HashMap<?, ?>) f.getFieldValue(); 
-					int mapLength = tempHashMap.keySet().toArray().length; 
-					int i = 0; 
-					for (Entry<?, ?> entry : tempHashMap.entrySet()) {
-						i += 1; 
-						jsonString.append("\"" + entry.getKey() + "\":"); 
-						jsonString.append("\"" + entry.getValue() + "\""); 
-						if (i<mapLength) jsonString.append(","); 
-					} 
-					jsonString.append("}"); 
-					numberOfFieldsProcessed +=1; 
-				} else if (f.getFieldType() == String[][].class) {
-					jsonString.append("\"" + f.getFieldName() + "\":["); 
-					String[][] values = (String[][]) f.getFieldValue();
-					for (int i=0; i<values.length; i++) {
-						jsonString.append("["); 
-						String[] valuesInnerArr = (String[]) values[i]; 
-						for (int j=0; j<valuesInnerArr.length; j++) { 
-							jsonString.append("\"" + valuesInnerArr[j] + "\""); 
-							if (j<valuesInnerArr.length-1) jsonString.append(",");
-						}
-						jsonString.append("]");
-						if (i<values.length-1) jsonString.append(","); 
-					} 
-					jsonString.append("]");  
-					numberOfFieldsProcessed +=1;
-				} else if (f.getFieldType() == Integer[][].class) { 
-					jsonString.append("\"" + f.getFieldName() + "\":["); 
-					Integer[][] values = (Integer[][]) f.getFieldValue();
-					for (int i=0; i<values.length; i++) {
-						jsonString.append("["); 
-						Integer[] valuesInnerArr = (Integer[]) values[i];
-						for (int j=0; j<valuesInnerArr.length; j++) { 
-							jsonString.append("\"" + valuesInnerArr[j] + "\""); 
-							if (j<valuesInnerArr.length-1) jsonString.append(",");
-						} 
-						jsonString.append("]"); 
-						if (i<values.length-1) jsonString.append(","); 
-					} 
-					jsonString.append("]");  
-					numberOfFieldsProcessed +=1;
-				} else if (f.getFieldType() == Integer[].class) {
-					jsonString.append("\"" + f.getFieldName() + "\":["); 
-					Integer[] values = (Integer[]) f.getFieldValue(); 
-					for (int i=0; i<values.length; i++) { 
-						jsonString.append("\"" + values[i] + "\""); 
-						if (i<values.length-1) jsonString.append(","); 
-					} 
-					jsonString.append("]");
-					numberOfFieldsProcessed +=1;
-				} else if (f.getFieldType() == Integer.class) { 
-					jsonString.append("\"" + f.getFieldName() + "\":");
-					jsonString.append("\"" + f.getFieldValue() + "\"");
-					numberOfFieldsProcessed +=1;
-				} else if (f.getFieldType() == int.class) {  
-					jsonString.append("\"" + f.getFieldName() + "\":");
-					jsonString.append("\"" + f.getFieldValue() + "\"");
-					numberOfFieldsProcessed +=1;
-				} else if (f.getFieldType() == String.class) {
-					jsonString.append("\"" + f.getFieldName() + "\":");
-					jsonString.append("\"" + f.getFieldValue() + "\"");
-					numberOfFieldsProcessed +=1;
-				}  else {
-					throw new IllegalArgumentException("Cannot recognize field type: " + f.toString()); 
-				} 
-				if (numberOfFieldsProcessed < fieldsModel.length) {
+				 jsonString.append(this.parseField(f));  
+				if (++numberOfFieldsProcessed < fieldsModel.length) {
 					jsonString.append(","); 
-				} 
+				}  
 			} 
 			jsonString.append("}");
 		} catch (ClassNotFoundException e) {
@@ -161,7 +91,7 @@ public class Utils {
 		return jsonString.toString(); 
 	} 
 	
-	private FieldType[] exploreMethodFields(Object objToExplore) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	private FieldType[] getObjectFields(Object objToExplore) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		// Field[] classTypeFields = classType.getDeclaredFields();
 		Field[] classTypeFields = objToExplore.getClass().getDeclaredFields(); 
 		ArrayList<FieldType> fieldTypeArr = new ArrayList<FieldType>(); 
@@ -177,5 +107,81 @@ public class Utils {
 		} 
 		return fieldTypeArr.toArray(new FieldType[fieldTypeArr.size()]); 
 	} 
+	
+	private String parseField(FieldType f) { 
+		StringBuilder jsonString = new StringBuilder(); 
+		if (f.getFieldType() == String[].class) { 
+			jsonString.append("\"" + f.getFieldName() + "\":["); 
+			String[] values = (String[]) f.getFieldValue(); 
+			for (int i=0; i<values.length; i++) { 
+				jsonString.append("\"" + values[i] + "\""); 
+				if (i<values.length-1) jsonString.append(","); 
+			} 
+			jsonString.append("]");  
+		} else if (f.getFieldType() == String[][].class) {
+			jsonString.append("\"" + f.getFieldName() + "\":["); 
+			String[][] values = (String[][]) f.getFieldValue();
+			for (int i=0; i<values.length; i++) {
+				jsonString.append("["); 
+				String[] valuesInnerArr = (String[]) values[i]; 
+				for (int j=0; j<valuesInnerArr.length; j++) { 
+					jsonString.append("\"" + valuesInnerArr[j] + "\""); 
+					if (j<valuesInnerArr.length-1) jsonString.append(",");
+				}
+				jsonString.append("]");
+				if (i<values.length-1) jsonString.append(","); 
+			} 
+			jsonString.append("]");  
+		} else if(f.getFieldType() == HashMap.class) {
+			jsonString.append("\"" + f.getFieldName() + "\":{"); 
+			HashMap<?,?> tempHashMap = (HashMap<?, ?>) f.getFieldValue(); 
+			int mapLength = tempHashMap.keySet().toArray().length; 
+			int i = 0; 
+			for (Entry<?, ?> entry : tempHashMap.entrySet()) {
+				i += 1; 
+				jsonString.append("\"" + entry.getKey() + "\":"); 
+				jsonString.append("\"" + entry.getValue() + "\""); 
+				if (i<mapLength) jsonString.append(","); 
+			} 
+			jsonString.append("}"); 
+		} else if (f.getFieldType() == Integer[][].class) { 
+			jsonString.append("\"" + f.getFieldName() + "\":["); 
+			Integer[][] values = (Integer[][]) f.getFieldValue();
+			for (int i=0; i<values.length; i++) {
+				jsonString.append("["); 
+				Integer[] valuesInnerArr = (Integer[]) values[i];
+				for (int j=0; j<valuesInnerArr.length; j++) { 
+					jsonString.append("\"" + valuesInnerArr[j] + "\""); 
+					if (j<valuesInnerArr.length-1) jsonString.append(",");
+				} 
+				jsonString.append("]"); 
+				if (i<values.length-1) jsonString.append(","); 
+			} 
+			jsonString.append("]");  
+		} else if (f.getFieldType() == Integer[].class) {
+			jsonString.append("\"" + f.getFieldName() + "\":["); 
+			Integer[] values = (Integer[]) f.getFieldValue(); 
+			for (int i=0; i<values.length; i++) { 
+				jsonString.append("\"" + values[i] + "\""); 
+				if (i<values.length-1) jsonString.append(","); 
+			} 
+			jsonString.append("]");
+		} else if (f.getFieldType() == Integer.class) { 
+			jsonString.append("\"" + f.getFieldName() + "\":");
+			jsonString.append("\"" + f.getFieldValue() + "\"");
+		} else if (f.getFieldType() == int.class) {  
+			jsonString.append("\"" + f.getFieldName() + "\":");
+			jsonString.append("\"" + f.getFieldValue() + "\"");
+		} else if (f.getFieldType() == String.class) { 
+			jsonString.append("\"" + f.getFieldName() + "\":");
+			jsonString.append("\"" + f.getFieldValue() + "\""); 
+		}  else if (f.getFieldType() == Boolean.class) {
+			jsonString.append("\"" + f.getFieldName() + "\":");
+			jsonString.append("\"" + f.getFieldValue() + "\"");
+		} else {
+			throw new IllegalArgumentException("Cannot recognize field type: " + f.toString()); 
+		} 
+		return jsonString.toString(); 
+	}  
 } 
 
