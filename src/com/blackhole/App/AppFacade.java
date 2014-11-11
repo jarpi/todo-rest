@@ -1,106 +1,108 @@
 package com.blackhole.App;
 
-import com.blackhole.App.TodosBusiness.todo;
+import com.blackhole.App.Todos.TodosBusiness;
+import com.blackhole.App.Todos.todo;
 import com.blackhole.RestRunner.Annotations.DELETE;
 import com.blackhole.RestRunner.Annotations.GET;
 import com.blackhole.RestRunner.Annotations.POST;
 import com.blackhole.RestRunner.Annotations.PATH;
 import com.blackhole.RestRunner.Annotations.PUT;
 import com.blackhole.RestRunner.Annotations.PathParam;
+import com.blackhole.Utils.JSONObject;
 
 public class AppFacade { 
-	public abstract class KeyValueDataContainer { 
-		private String key = null;
-		private String value = null;
-		public KeyValueDataContainer(String fieldKey, String fieldValue){this.key = fieldKey; this.value = fieldValue;}   
-	} 
-	public class ResultDataContainer extends KeyValueDataContainer{ 
-		public ResultDataContainer(String fieldValue){super("result",fieldValue);}  
-	} 
-	public class ErrorDataContainer extends KeyValueDataContainer{ 
-		public ErrorDataContainer(String fieldValue){super("error",fieldValue);}   
-	}
-	public class MessageDataContainer extends KeyValueDataContainer{ 
-		public MessageDataContainer(String fieldValue){super("message",fieldValue);}   
-	} 
 	private Context mObjContext = null;     
 	public AppFacade(Context c) {this.mObjContext = c;} 
 	
- 	@GET 
-	@PATH(value="/testing")  
-	public void testing999() {System.out.println("AAA");}
-	
+	// Tested 
 	@GET 
 	@PATH(value="/getNotes")  
 	public String testing() {
-		System.out.println("AAA"); 
-		String result = ""; 
+		JSONObject result = new JSONObject("result","No notes found"); 
 		TodosBusiness tb = new TodosBusiness(mObjContext);
 		todo[] todos = tb.GetTodos(); 
 		if (todos != null) { 
-			for (todo t : todos) {
-				result += t.toString(); 
-				if (result != "") { result = result + ";"; } 
-			} 
+			return this.mObjContext.mObjUtilsInstance.ToJSON(todos); 
 		} 
 		tb = null; 
-		return result; 
+		return this.mObjContext.mObjUtilsInstance.ToJSON(result); 
 	}
- 
+
+	// Tested 
 	@GET 
 	@PATH(value="/getFilteredNotes/{rowStart}/{rowOffset}")  
 	public String testingXXX(@PathParam("rowStart") String rowStart, @PathParam("rowOffset") String rowOffset) {  
-		System.out.println("AAA"); 
-		String result = "No results found"; 
+		JSONObject result = new JSONObject("result","No notes found");
 		TodosBusiness tb = new TodosBusiness(mObjContext);
-		todo[] todos = tb.GetTodosByLimit(Integer.parseInt(rowStart),Integer.parseInt(rowOffset)); 
-		if (todos != null && todos.length>0) { 
-			for (todo t : todos) { 
-				result += t.toString(); 
-				if (result != "") { result = result + ";"; } 
+		int index = Integer.parseInt(rowStart); 
+		int offSet = Integer.parseInt(rowOffset); 
+		if (index<=0) {
+			result = new JSONObject("error","Index out of bound, to low"); 
+		} else {
+			todo[] todos = tb.GetTodosByLimit(index, offSet); 
+			if (todos != null && todos.length>0) { 
+				/* for (todo t : todos) { 
+					result += t.toString(); 
+					if (result != "") { result = result + ";"; } 
+				} */ 
+				return this.mObjContext.mObjUtilsInstance.ToJSON(todos);
 			} 
 		} 
 		tb = null; 
-		return result; 
+		return this.mObjContext.mObjUtilsInstance.ToJSON(result); 
 	}
 	
+	// Tested 
 	@GET
 	@PATH(value="/getNote/{id}")   
 	public String testing2(@PathParam("id") String id) 
 	{
-		Object result = new MessageDataContainer("No note found");  
+		JSONObject result = new JSONObject("result","No note found");  
 		System.out.println("BBB " + id); 
 		TodosBusiness tb = new TodosBusiness(mObjContext); 
 		todo t = tb.GetTodoById(Integer.parseInt(id)); 
 		if (t != null) { 
 			try {
-				result = t;  
+				return this.mObjContext.mObjUtilsInstance.ToJSON(t);   
 			} catch (Exception e) { 
 				e.printStackTrace(); 
-				result = new ErrorDataContainer("Error ocurred while converting to JSON");  
+				result = new JSONObject("error","Error ocurred while converting to JSON");  
 			} 
 		} 
 		tb = null; 
-		return this.mObjContext.mObjUtilsInstance.ObjectToJson(result);  
+		return this.mObjContext.mObjUtilsInstance.ToJSON(result);  
 	}  
-
+	
+	// Tested 
 	@POST 
 	@PATH(value="/addNote/{title}/{desc}")  
-	public void testing5(@PathParam("title") String title, @PathParam("desc") String desc) 
+	public String testing5(@PathParam("title") String title, @PathParam("desc") String desc) 
 	{
-		System.out.println("ZZZ");  
-		TodosBusiness tb = new TodosBusiness(mObjContext); 
-		tb.InsertTodo(title, desc);  
+		TodosBusiness tb = new TodosBusiness(mObjContext);
+		JSONObject result = new JSONObject("result",tb.InsertTodo(title, desc));  
 		tb = null; 
+		return this.mObjContext.mObjUtilsInstance.ToJSON(result); 
 	} 
 	
-	@PUT
-	@PATH(value="/updateNote/{id}/{title}/{desc}")  
-	public void testing3(@PathParam("id") String id, @PathParam("title") String title, @PathParam("desc") String desc) {System.out.println("CCC");}
 	
+	@POST 
+	@PATH(value="/updateNote/{id}/{title}/{desc}")  
+	public String testing3(@PathParam("id") String id, @PathParam("title") String title, @PathParam("desc") String desc) {
+		TodosBusiness tb = new TodosBusiness(mObjContext); 
+		JSONObject result = new JSONObject("result",tb.UpdateTodo(Integer.parseInt(id), title, desc)); 
+		tb = null; 
+		return this.mObjContext.mObjUtilsInstance.ToJSON(result);
+	} 
+	
+	// Tested 
 	@DELETE 
 	@PATH(value="/deleteNote/{id}")  
-	public void testing4(@PathParam("id") String id) {System.out.println("CCC");} 
+	public String testing4(@PathParam("id") String id) {
+		TodosBusiness tb = new TodosBusiness(mObjContext); 
+		JSONObject result = new JSONObject("result", tb.DeleteTodoById(Integer.parseInt(id)));  
+		tb = null;
+		return this.mObjContext.mObjUtilsInstance.ToJSON(result);
+	} 
 	
 	@GET 
 	@PATH(value="/player/isrunning") 
@@ -109,12 +111,12 @@ public class AppFacade {
 		Object result = ""; 
 		try { 
 			this.mObjContext.logInfo(String.valueOf(isRunning));
-			result = new ResultDataContainer((isRunning?"true":"false"));
+			result = new JSONObject("result",(isRunning?"true":"false"));
 		} catch (Exception e) {
-			result = new MessageDataContainer("Error ocurred while converting to JSON");
+			result = new JSONObject("result","Error ocurred while converting to JSON");
 			e.printStackTrace();  
 		} 
-		return this.mObjContext.mObjUtilsInstance.ObjectToJson(result); // Fix that 
+		return this.mObjContext.mObjUtilsInstance.ToJSON(result);  
 	} 
 	
 	@GET 
@@ -143,4 +145,4 @@ public class AppFacade {
 		System.out.println("Facade del volume"); 
 		this.mObjContext.mObjMP3Player.decreaseVolume(); 
 	}  
-} 
+}  

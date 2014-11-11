@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.blackhole.App.AppFacade.KeyValueDataContainer;
+import com.blackhole.App.Context;
+import com.blackhole.App.Todos.todo;
 
 public class Utils {
 	private class FieldType {
@@ -20,7 +21,7 @@ public class Utils {
 	} 
 	private static Utils mInstance = null; 
 	
-	public void Utils() {} 
+	public Utils() {} 
 	
 	public static Utils getInstance() {
 		if (Utils.mInstance == null) {
@@ -30,12 +31,27 @@ public class Utils {
 	} 
 
 	
-	public String ObjectToJSON(Object[] objArr) throws Exception {
+	public String ToJSON(Object[] objArr) throws Exception {
 		StringBuilder jsonString = new StringBuilder();
 		jsonString.append("[");
 		for (int i=0; i<objArr.length; i++) { 
 			Object obj = objArr[i]; 
-			String jsonObjStr = this.ObjectToJson(obj); 
+			String jsonObjStr = this.ToJSON(obj); 
+			jsonString.append(jsonObjStr); 
+			if (i<objArr.length-1) {  
+				jsonString.append(","); 
+			} 
+		} 
+		jsonString.append("]");
+		return jsonString.toString(); 
+	} 
+	
+	public String ToJSON(todo[] objArr) {
+		StringBuilder jsonString = new StringBuilder();
+		jsonString.append("[");
+		for (int i=0; i<objArr.length; i++) { 
+			Object obj = objArr[i]; 
+			String jsonObjStr = this.ToJSON(obj); 
 			jsonString.append(jsonObjStr); 
 			if (i<objArr.length-1) {  
 				jsonString.append(","); 
@@ -45,12 +61,47 @@ public class Utils {
 		return jsonString.toString(); 
 	}
 	
-	public String DataContainerToJson(KeyValueDataContainer dc) {
-		// TODO 
-		return null; 
-	}
+	public String ToJSON(JSONObject jsonObj) {
+		StringBuilder jsonString = new StringBuilder(); 
+		try {
+			getClass().getClassLoader().loadClass(jsonObj.getClass().getName()); 
+			FieldType[] fieldsModel = this.getObjectFields(jsonObj); 
+			jsonString.append("{"); 
+			int numberOfFieldsProcessed = 0; 
+			for (FieldType f : fieldsModel) {  
+				 // jsonString.append(this.parseField(f)); 
+				if(f.getFieldType() == HashMap.class) {
+					HashMap<?,?> tempHashMap = (HashMap<?, ?>) f.getFieldValue(); 
+					int mapLength = tempHashMap.keySet().toArray().length; 
+					int i = 0; 
+					for (Entry<?, ?> entry : tempHashMap.entrySet()) {
+						i += 1; 
+						jsonString.append("\"" + entry.getKey() + "\":"); 
+						jsonString.append("\"" + entry.getValue() + "\""); 
+						if (i<mapLength) jsonString.append(","); 
+					} 
+					if (++numberOfFieldsProcessed < fieldsModel.length) {
+						jsonString.append(","); 
+					} 
+				}
+			} 
+			jsonString.append("}"); 
+		} catch (ClassNotFoundException e) {
+			jsonString.delete(0, jsonString.length()); 
+			jsonString.append("ClassNotFoundException Ocurred");
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) { 
+			e.printStackTrace();
+		} 
+		return jsonString.toString(); 
+	} 
 	
-	public String ObjectToJson(Object obj) { 
+	public String ToJSON(Object obj) { 
 		StringBuilder jsonString = new StringBuilder(); 
 		try { 
 			getClass().getClassLoader().loadClass(obj.getClass().getName());
@@ -63,10 +114,10 @@ public class Utils {
 					jsonString.append(","); 
 				}  
 			} 
-			jsonString.append("}");
-		} catch (ClassNotFoundException e) {
+			jsonString.append("}"); 
+		} catch (ClassNotFoundException e) { 
 			jsonString.delete(0, jsonString.length()); 
-			jsonString.append("ClassNotFoundException Ocurred");
+			jsonString.append("ClassNotFoundException Ocurred"); 
 			e.printStackTrace(); 
 		} catch (IllegalArgumentException e) {
 			jsonString.delete(0, jsonString.length()); 
@@ -96,7 +147,7 @@ public class Utils {
 		Field[] classTypeFields = objToExplore.getClass().getDeclaredFields(); 
 		ArrayList<FieldType> fieldTypeArr = new ArrayList<FieldType>(); 
 		for (Field classTypeField : classTypeFields) { 
-			if ((classTypeField.getName().indexOf("this") == -1)) {
+			if ((classTypeField.getName().indexOf("this") == -1) && (classTypeField.getType() != Context.class)) {
 				Field objField = objToExplore.getClass().getDeclaredField(classTypeField.getName());
 				// When a class is declared private, cannot access it's properties 
 				objField.setAccessible(true); 
@@ -176,6 +227,9 @@ public class Utils {
 			jsonString.append("\"" + f.getFieldName() + "\":");
 			jsonString.append("\"" + f.getFieldValue() + "\""); 
 		}  else if (f.getFieldType() == Boolean.class) {
+			jsonString.append("\"" + f.getFieldName() + "\":");
+			jsonString.append("\"" + f.getFieldValue() + "\"");
+		} else if (f.getFieldType() == boolean.class) {
 			jsonString.append("\"" + f.getFieldName() + "\":");
 			jsonString.append("\"" + f.getFieldValue() + "\"");
 		} else {

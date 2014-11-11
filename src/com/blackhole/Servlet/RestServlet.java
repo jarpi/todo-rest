@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.blackhole.App.AppFacade;
 import com.blackhole.App.Context; 
-import com.blackhole.App.TodosBusiness;
-import com.blackhole.App.TodosBusiness.todo;
 import com.blackhole.RestRunner.Runner;
 
 public class RestServlet extends HttpServlet{
