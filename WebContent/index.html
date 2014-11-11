@@ -6,6 +6,7 @@
 <script type="text/javascript" src="js/init.js"></script>
 </head> 
 </html>
+<div id="body-wrapper">
     <div id="banner-wrapper">
         <div id="banner-inner"> 
                 <div id="logo"><img src="images/logo.png" title="logo" /></div>
@@ -68,7 +69,11 @@
 					url:"http://192.168.1.103:8080/todo-rest/rest/volume/del" 
 				}).then(function(data){  
 				}); 
-			});
+			}); 
+			$("#logo").click(function(){
+				$("#left-menu").toggle(); 
+				$("#content").css('width',($("#left-menu").css('display')=="none"?'100%':'70%'));   
+		});
 		}); 
 	</script>
 	<div id="player">
@@ -79,5 +84,6 @@
 			<div id="delVolume" class="odd"><p>Del Volume</p></div> 
 		</div> 
 	</div>
+</div>
 </div>
 </div>
