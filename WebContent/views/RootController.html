@@ -1,0 +1,53 @@
+<script type="text/javascript">
+				$(document).ready(function(){  
+					// Check player is running 
+					$.ajax({ 
+							url:"http://192.168.1.103:8080/todo-rest/rest/player/isrunning" 
+						}).then(function(data){ 
+							console.log(data); 
+							$("#player").append("<p class='loading'>"+ data + "</p>");
+						}); 
+					// When user clicks on start player ...  
+					$("#start").click(function(){
+						$("#player").append("<p class='loading'>Loading...</p>");
+						$.ajax({
+							url:"http://192.168.1.103:8080/todo-rest/rest/play/flaixfm"
+						}).then(function(data){ 
+							$(".loading").remove(); 
+						}); 
+					}); 
+					$("#stop").click(function(){ 
+						$.ajax({
+							url:"http://192.168.1.103:8080/todo-rest/rest/stop/flaixfm" 
+						}).then(function(data){  
+							
+						}); 
+					}); 
+					$("#addVolume").click(function(){ 
+						$.ajax({
+							url:"http://192.168.1.103:8080/todo-rest/rest/volume/add" 
+						}).then(function(data){  
+						}); 
+					});
+					$("#delVolume").click(function(){ 
+						$.ajax({
+							url:"http://192.168.1.103:8080/todo-rest/rest/volume/del" 
+						}).then(function(data){  
+						}); 
+					}); 
+					if (window.innerWidth<="480") {
+						$("#logo").click(function(){
+							$("#left-menu").toggle(); 
+							$("#content").css('width',($("#left-menu").css('display')=="none"?'100%':'70%'));   
+						}); 	
+					}
+				}); 
+			</script> 
+			<div id="player">  
+				<div id="start" class="odd" ng-click="startPlaying(item,$event)"><p>Start</p></div>
+				<div id="stop" class="even" ng-click="stopPlaying(item,$event)"><p>Stop</p></div>
+				<div id="volume">
+					<div id="addVolume" class="odd" ng-click="addVolume(item,$event)"><p>Add Volume</p></div>
+					<div id="delVolume" class="even" ng-click="delVolume(item,$event)"><p>Del Volume</p></div> 
+				</div> 
+			</div>

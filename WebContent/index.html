@@ -1,11 +1,14 @@
-<html>
+<html data-ng-app="todosApp"> 
 <head>
 <meta name="viewport" content="width=device-width, user-scalable=no">
-<link rel="stylesheet" type="text/css" href="css/style.css"></link>
-<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>  
+<link rel="stylesheet" type="text/css" href="css/style.css"></link> 
+<script type="text/javascript" src="js/angular.js"></script>    
+<script type="text/javascript" src="js/angular-route.js"></script>  
+<script type="text/javascript" src="js/app.js"></script>  
+<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="js/init.js"></script>
 </head> 
-</html>
+</html> 
 <div id="body-wrapper">
     <div id="banner-wrapper">
         <div id="banner-inner"> 
@@ -17,73 +20,9 @@
         </div>
     </div> 
     <div id="menu-content-container">
-    <!-- menu itself -->
-    <div id="left-menu"> 
-        <ul>
-	        <a class="player" href="#" >
-		      <li>
-	           	<div class="icon">Player</div>
-		      </li>
-	        </a>
-	        <a class="todos" href="#">
-		        <li>
-		             <div class="icon">Todos</div>
-		        </li>
-	        </a> 
-        </ul>
-    </div> 
-<div id="content">
-	<script type="text/javascript">
-		$(document).ready(function(){  
-			// Check player is running 
-			$.ajax({
-					url:"http://192.168.1.103:8080/todo-rest/rest/player/isrunning" 
-				}).then(function(data){ 
-					console.log(data); 
-					$("#player").append("<p class='loading'>"+ data + "</p>");
-				}); 
-			// When user clicks on start player ...  
-			$("#start").click(function(){
-				$("#player").append("<p class='loading'>Loading...</p>");
-				$.ajax({
-					url:"http://192.168.1.103:8080/todo-rest/rest/play/flaixfm"
-				}).then(function(data){ 
-					$(".loading").remove(); 
-				}); 
-			}); 
-			$("#stop").click(function(){ 
-				$.ajax({
-					url:"http://192.168.1.103:8080/todo-rest/rest/stop/flaixfm" 
-				}).then(function(data){  
-					
-				}); 
-			}); 
-			$("#addVolume").click(function(){ 
-				$.ajax({
-					url:"http://192.168.1.103:8080/todo-rest/rest/volume/add" 
-				}).then(function(data){  
-				}); 
-			});
-			$("#delVolume").click(function(){ 
-				$.ajax({
-					url:"http://192.168.1.103:8080/todo-rest/rest/volume/del" 
-				}).then(function(data){  
-				}); 
-			}); 
-			$("#logo").click(function(){
-				$("#left-menu").toggle(); 
-				$("#content").css('width',($("#left-menu").css('display')=="none"?'100%':'70%'));   
-		});
-		}); 
-	</script>
-	<div id="player">
-		<div id="start" class="even"><p>Start</p></div>
-		<div id="stop" class="odd"><p>Stop</p></div>
-		<div id="volume">
-			<div id="addVolume" class="even"><p>Add Volume</p></div>
-			<div id="delVolume" class="odd"><p>Del Volume</p></div> 
-		</div> 
+    <div ng-include="'views/left-menu.html'"></div>
+		<div id="content" ng-view> 
+			
+		</div>
 	</div>
-</div>
-</div>
-</div>
+</div> 
