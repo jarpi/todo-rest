@@ -45,7 +45,7 @@ jQuery(function($) {
     // Add a handler function for the resize event of window
     $(window).resize(resizeMenu);
  
-    // Initialize the menu and the button
+    // Initialize menu and the button
     resizeMenu();
     setupMenuButton();
 });

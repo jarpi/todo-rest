@@ -6,23 +6,15 @@
 <script type="text/javascript" src="js/angular-route.js"></script>  
 <script type="text/javascript" src="js/app.js"></script>  
 <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="js/init.js"></script>
+<!-- <script type="text/javascript" src="js/init.js"></script>  --> 
 </head> 
 </html> 
 <div id="body-wrapper">
-    <div id="banner-wrapper">
-        <div id="banner-inner"> 
-                <div id="logo"><img src="images/logo.png" title="logo" /></div>
-                <div id="text">
-                	<h1>ToDos app</h1>
-                	<h5>Welcome back, Admin</h5>
-                </div> 
-        </div>
-    </div> 
+    <div ng-include="'views/header.html'"></div>
     <div id="menu-content-container">
-    <div ng-include="'views/left-menu.html'"></div>
-		<div id="content" ng-view> 
-			
-		</div>
+    	<div ng-include="'views/left-menu.html'"></div>
+    	<div id="content" ng-view></div>
 	</div>
 </div> 
+
+
