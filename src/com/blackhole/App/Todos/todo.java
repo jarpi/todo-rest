@@ -29,7 +29,8 @@ public class todo {
 		objParams.add(this.title); 
 		objParams.add(this.desc);
 		int result = 0; 
-		result = this.mObjContext.mDBConnection.executeUpdate(sql,objParams.toArray(new Object[]{})); 
+		result = this.mObjContext.mDBConnection.executeUpdate(sql,objParams.toArray(new Object[]{}));
+		if (result != 0) return (int) this.mObjContext.mDBConnection.LastInsertId(); 
 		return result; 
 	} 
 	public int UpdateTodo() throws SQLException { 

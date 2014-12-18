@@ -9,7 +9,7 @@ public class TodosBusiness {
 	Context mObjContext = null; 
 	public TodosBusiness(Context c) {this.mObjContext = c;} 
 	
-	public boolean InsertTodo(String title, String desc) {
+	public int InsertTodo(String title, String desc) {
 		todo t = new todo(mObjContext, title, desc);
 		int result = 0;
 		try {
@@ -17,7 +17,7 @@ public class TodosBusiness {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 
-		return (result != 0); 
+		return result; 
 	} 
 	
 	public todo GetTodoById(int id) {
@@ -72,7 +72,7 @@ public class TodosBusiness {
 		objParams.add(rowOffset); 
 		Object[] result;
 		todo t = null; 
-		try {
+		try { 
 			result = mObjContext.mDBConnection.executeQuery(sql, objParams.toArray(new Object[]{}));  
 			if (result.length > 0) { 
 				for (int i=0; i<result.length; i++) { 

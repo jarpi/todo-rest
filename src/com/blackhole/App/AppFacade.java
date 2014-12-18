@@ -17,7 +17,7 @@ public class AppFacade {
 	// Tested 
 	@GET 
 	@PATH(value="/getNotes")  
-	public String testing() {
+	public String testing() {  
 		JSONObject result = new JSONObject("result","No notes found"); 
 		TodosBusiness tb = new TodosBusiness(mObjContext);
 		todo[] todos = tb.GetTodos(); 
@@ -36,8 +36,8 @@ public class AppFacade {
 		TodosBusiness tb = new TodosBusiness(mObjContext);
 		int index = Integer.parseInt(rowStart); 
 		int offSet = Integer.parseInt(rowOffset); 
-		if (index<=0) {
-			result = new JSONObject("error","Index out of bound, to low"); 
+		if (index<0) { 
+			result = new JSONObject("error","Index out of bounds, too low"); 
 		} else {
 			todo[] todos = tb.GetTodosByLimit(index, offSet); 
 			if (todos != null && todos.length>0) { 

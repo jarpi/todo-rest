@@ -1,5 +1,13 @@
 <div id="todos"> 
-	<div id="todosSearch"><input id="searchBox" type="text" value="Search..." ng-click="resetInput(item,$event)" ng-mouseleave="resetInput(item,$event)"></input></div> 
-	<div id="todosElems">test test test</div>  
+	<div id="todosSearch">
+		<input id="searchBox" type="text" value="Search..." ng-click="resetInput(item,$event)" ng-mouseleave="resetInput(item,$event)"></input>
+		<div id="addTodo" ng-click="addTodo(item, $event,'testing...','testing...')" >Add todo</div> 
+	</div> 
+	<div id="todosElems">    
+		<div id="noteId" class="noteTitle" ng-repeat="todo in todos">{{todo.id + " " + todo.title + " " + todo.desc}}</div> 
+		<div id="loadMore" ng-click="getTodos(item,$event)">Load more... </div> 
+	</div>  
 </div>  
+
+
 

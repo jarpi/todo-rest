@@ -140,6 +140,16 @@ public class SQLliteDBImpl {
 		return stmt; 
 	} 
 	
+	public int LastInsertId() {
+		try {
+			Object[] result = this.executeQuery("SELECT MAX(id) FROM todos");
+			Object[] res = (Object[]) result[0];
+			return (int) res[0];  
+		} catch (SQLException e) {
+			return 0;  
+		}
+	}
+	
 	public void dispose() {
 		try {
 			this.mCon.close();

@@ -15,6 +15,16 @@ var todosApp = angular.module('todosApp', ['ngRoute']);
 			.otherwise({redirectTo:'/player'}); 
 	}); 
 	
+// Factories (data model for todo datasource)  
+todosApp.factory('TodosService', function () { 
+		var todosService = { 
+				todos:[],  
+				index:0, 
+				offset:5, 
+		}; 
+		return todosService;  
+	});  
+	
 // Controllers 
 	
 	todosApp.controller('RootController', function($scope, $http){ 
@@ -22,7 +32,7 @@ var todosApp = angular.module('todosApp', ['ngRoute']);
             var responsePromise = $http.get("http://192.168.1.103:8080/todo-rest/rest/play/flaixfm");
             responsePromise.success(function(data, status, headers, config) { 
                 $scope.fromServer = data.title; 
-            });
+            }); 
             responsePromise.error(function(data, status, headers, config) {
                 alert("AJAX failed!");
             });
@@ -65,11 +75,51 @@ var todosApp = angular.module('todosApp', ['ngRoute']);
 		};  
 	}); 
 	todosApp.controller('menuController', function($scope){}); 
-	todosApp.controller('TodosController', function($scope){
+	todosApp.controller('TodosController', function($scope, $http, $rootScope,TodosService) {     
+		$scope.todos = TodosService.todos;    
+		// $rootScope.index = 0; 
+		// $rootScope.offset = 5; 
+		$scope.getTodos = function(item, event) {    
+			var responsePromise = $http.get("http://192.168.1.103:8080/todo-rest/rest/getFilteredNotes/" + TodosService.index + "/" + TodosService.offset); 
+            responsePromise.success(function(data, status, headers, config) { 
+                for (var i=0; i<data.length;i++) { 
+                	var todo = data[i];  
+                	var found = false; 
+                	for (var j=0;j<TodosService.todos.length;j++) { 
+                		var currentTodo = TodosService.todos[j]; 
+                		if (currentTodo.id === todo.id) found = true; 
+                	} 
+                	if (!found) {
+                		TodosService.todos.push(data[i]); 
+                	} 
+                }  
+            	console.log(TodosService.todos);
+            	TodosService.index = TodosService.todos.length+1; 
+            }); 
+            responsePromise.error(function(data, status, headers, config) { 
+                alert("AJAX failed!"); 
+            }); 
+		}; 
+		$scope.addTodo = function(item, event, title, desc) {
+			var responsePromise = $http.post("http://192.168.1.103:8080/todo-rest/rest/addNote/" + title + "/" + desc); 
+            responsePromise.success(function(data, status, headers, config) { 
+                // After succes inserted into db, add to scope 
+            	console.log(data); 
+            	if (data.result != 0) {
+            		var obj = {"id":data.result,"title":title,"desc":desc};
+            		TodosService.todos.push(obj); 
+            	} 
+            	console.log(TodosService.todos);    
+            }); 
+            responsePromise.error(function(data, status, headers, config) {
+                alert("AJAX failed!");
+            }); 
+		};   
 		$scope.resetInput = function(item, event) { 
 			inputVal =$("#searchBox").val();  
 			$("#searchBox").val((inputVal=="Search..."?"":(inputVal.length==0?"Search...":inputVal)));    
 		}; 
+		if ($scope.todos.length<1) $scope.getTodos(); 
 	});  
 	
 	
