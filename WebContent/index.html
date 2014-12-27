@@ -1,20 +1,57 @@
-<html data-ng-app="todosApp"> 
-<head>
-<meta name="viewport" content="width=device-width, user-scalable=no">
-<link rel="stylesheet" type="text/css" href="css/style.css"></link> 
-<script type="text/javascript" src="js/angular.js"></script>    
-<script type="text/javascript" src="js/angular-route.js"></script>  
-<script type="text/javascript" src="js/app.js"></script>  
-<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-<!-- <script type="text/javascript" src="js/init.js"></script>  --> 
-</head> 
+<!DOCTYPE html>
+<html lang="en" data-ng-app="todosApp">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>ToDos Dashboard</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="css/styles.css" rel="stylesheet">
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+	</head>
+	<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">ToDo's WebApp</a> 
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#player">Dashboard</a></li>
+            <li><a href="#player">Player</a></li>
+            <li><a href="#todos">Todos</a></li>
+            <li><a href="#">...</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+</nav>
+
+<div class="container-fluid" ng-view> 
+</div>
+
+<footer>
+  <p class="pull-right">©2014 Coding4Cigarrettes.com</p>
+</footer>
+        
+	<!-- script references --> 
+		<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/scripts.js"></script>
+		<script type="text/javascript" src="js/angular.js"></script>    
+		<script type="text/javascript" src="js/angular-route.js"></script>  
+		<script type="text/javascript" src="js/app.js"></script>  
+	</body>
 </html> 
-<div id="body-wrapper">
-    <div ng-include="'views/header.html'"></div>
-    <div id="menu-content-container">
-    	<div ng-include="'views/left-menu.html'"></div>
-    	<div id="content" ng-view></div>
-	</div>
-</div> 
-
-

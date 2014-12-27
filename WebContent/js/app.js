@@ -15,13 +15,24 @@ var todosApp = angular.module('todosApp', ['ngRoute']);
 			.otherwise({redirectTo:'/player'}); 
 	}); 
 	
+	todosApp.directive('whenScrolled', function() { 
+	    return function(scope, elm, attr) {
+	        var raw = elm[0]; 
+	        elm.bind('scroll', function() { 
+	            if ((raw.scrollTop + raw.offsetHeight)+1 >= raw.scrollHeight) {
+	                scope.$apply(attr.whenScrolled); 
+	            } 
+	        }); 
+	    }; 
+	}); 
+	
 // Factories (data model for todo datasource)  
 todosApp.factory('TodosService', function () { 
 		var todosService = { 
 				todos:[],  
 				index:0, 
 				offset:5, 
-		}; 
+		};   
 		return todosService;  
 	});  
 	
@@ -79,7 +90,7 @@ todosApp.factory('TodosService', function () {
 		$scope.todos = TodosService.todos;    
 		// $rootScope.index = 0; 
 		// $rootScope.offset = 5; 
-		$scope.getTodos = function(item, event) {    
+		$scope.getTodos = function(item, event) {     
 			var responsePromise = $http.get("http://192.168.1.103:8080/todo-rest/rest/getFilteredNotes/" + TodosService.index + "/" + TodosService.offset); 
             responsePromise.success(function(data, status, headers, config) { 
                 for (var i=0; i<data.length;i++) { 
@@ -100,26 +111,44 @@ todosApp.factory('TodosService', function () {
                 alert("AJAX failed!"); 
             }); 
 		}; 
-		$scope.addTodo = function(item, event, title, desc) {
-			var responsePromise = $http.post("http://192.168.1.103:8080/todo-rest/rest/addNote/" + title + "/" + desc); 
+		$scope.addTodo = function(item, event) { 
+			var title = $("#todoTitle").val(); 
+			var desc = $("#todoDesc").val(); 
+			var id = $("#todoId").val(); 
+			console.log("ID: " + id); 
+			var responsePromise = (id && id!=""?$http.post("http://192.168.1.103:8080/todo-rest/rest/addNote/" + title + "/" + desc):$http.post("http://192.168.1.103:8080/todo-rest/rest/updateNote/"+id+"/" + title + "/" + desc)); 
             responsePromise.success(function(data, status, headers, config) { 
                 // After succes inserted into db, add to scope 
-            	console.log(data); 
             	if (data.result != 0) {
             		var obj = {"id":data.result,"title":title,"desc":desc};
             		TodosService.todos.push(obj); 
+            		$scope.resetForm(); 
             	} 
             	console.log(TodosService.todos);    
             }); 
             responsePromise.error(function(data, status, headers, config) {
                 alert("AJAX failed!");
             }); 
-		};   
+		}; 
+		$scope.loadTodo = function(item, event, index) {
+			var todo = TodosService.todos[index];  
+			$("#todoTitle").val(todo.title);
+			$("#todoDesc").val(todo.desc); 
+			$("#todoId").text=todo.id; 
+			$("#todoSubmit").text("Update"); 
+		}; 
+		$scope.resetForm = function() { 
+			$("#todoTitle").val("");
+			$("#todoDesc").val("");
+			$("#todoId").text = ""; 
+			$("#todoSubmit").text("Add"); 
+		}
 		$scope.resetInput = function(item, event) { 
 			inputVal =$("#searchBox").val();  
 			$("#searchBox").val((inputVal=="Search..."?"":(inputVal.length==0?"Search...":inputVal)));    
 		}; 
 		if ($scope.todos.length<1) $scope.getTodos(); 
-	});  
+	}); 
+	 
 	
 	

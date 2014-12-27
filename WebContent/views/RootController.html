@@ -1,8 +1,27 @@
-<div id="player">  
-	<div id="start" class="odd" ng-click="startPlaying(item,$event)"><p>Start</p></div>
-	<div id="stop" class="even" ng-click="stopPlaying(item,$event)"><p>Stop</p></div>
-	<div id="volume">
-		<div id="addVolume" class="odd" ng-click="addVolume(item,$event)"><p>Add Volume</p></div>
-		<div id="delVolume" class="even" ng-click="delVolume(item,$event)"><p>Del Volume</p></div> 
-	</div> 
-</div>
+<div class="col-sm-12 col-md-12 main">
+		  <h1 class="page-header">
+            Player
+            <p class="lead">(with off-canvas sidebar)</p>
+          </h1>
+          <div class="row"> 
+          	<div class="col-xs-12 col-md-12 _col-xs-offset-2 _col-md-offset-5 text-center">  
+          		<button type="button" class="btn btn-default" aria-label="Left Align" ng-click="startPlaying(item,$event)">
+  					<span class="fa fa-play fa-5x" aria-hidden="true"></span>
+				</button> 
+				<button type="button" class="btn btn-default" aria-label="Left Align" ng-click="stopPlaying(item,$event)">
+  					<span class="fa fa-stop fa-5x" aria-hidden="true"></span>
+				</button>
+          	</div> 
+          </div> 
+          <div class="row"> 
+          	<div class="col-xs-12 col-md-12 _col-xs-offset-2 _col-md-offset-5 text-center"> 
+	          	<button type="button" class="btn btn-default" aria-label="Left Align" ng-click="addVolume(item,$event)">
+  					<span class="fa fa-volume-up fa-5x" aria-hidden="true"></span>
+				</button>
+				<button type="button" class="btn btn-default" aria-label="Left Align" ng-click="delVolume(item,$event)">
+  					<span class="fa fa-volume-down fa-5x" aria-hidden="true"></span>
+				</button>  
+			</div>
+          </div> 
+          <hr>
+      </div><!--/row-->
