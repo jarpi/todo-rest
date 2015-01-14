@@ -76,7 +76,8 @@ todosApp.factory('TodosService', function () {
             });
         }; 
 	});  
-	todosApp.controller('headerController', function($scope){ 
+	/* Old 
+	 * todosApp.controller('headerController', function($scope){ 
 		// Defined in header.html {html level} 
 		$scope.toggleMenu = function(item, event) { 
 			if (window.innerWidth<="480") {
@@ -85,7 +86,7 @@ todosApp.factory('TodosService', function () {
 			} 
 		};  
 	}); 
-	todosApp.controller('menuController', function($scope){}); 
+	todosApp.controller('menuController', function($scope){}); */ 
 	todosApp.controller('TodosController', function($scope, $http, $rootScope,TodosService) {     
 		$scope.todos = TodosService.todos;    
 		// $rootScope.index = 0; 
@@ -93,35 +94,63 @@ todosApp.factory('TodosService', function () {
 		$scope.getTodos = function(item, event) {     
 			var responsePromise = $http.get("http://192.168.1.103:8080/todo-rest/rest/getFilteredNotes/" + TodosService.index + "/" + TodosService.offset); 
             responsePromise.success(function(data, status, headers, config) { 
-                for (var i=0; i<data.length;i++) { 
-                	var todo = data[i];  
-                	var found = false; 
-                	for (var j=0;j<TodosService.todos.length;j++) { 
-                		var currentTodo = TodosService.todos[j]; 
-                		if (currentTodo.id === todo.id) found = true; 
-                	} 
-                	if (!found) {
-                		TodosService.todos.push(data[i]); 
-                	} 
-                }  
-            	console.log(TodosService.todos);
-            	TodosService.index = TodosService.todos.length+1; 
+            	if (data) {
+	                for (var i=0; i<data.length;i++) { 
+	                	var todo = data[i];  
+	                	var found = false; 
+	                	for (var j=0;j<TodosService.todos.length;j++) { 
+	                		var currentTodo = TodosService.todos[j]; 
+	                		if (currentTodo.id === todo.id) found = true; 
+	                	} 
+	                	if (!found) {
+	                		TodosService.todos.push(data[i]); 
+	                	} 
+	                }  
+	            	console.log(TodosService.todos);
+	            	TodosService.index = TodosService.todos.length+1;
+            	} 
             }); 
             responsePromise.error(function(data, status, headers, config) { 
                 alert("AJAX failed!"); 
             }); 
 		}; 
+		$scope.removeTodo = function(item, event, index) {
+			var todo = TodosService.todos[index]; 
+			var responsePromise = $http.post("http://192.168.1.103:8080/todo-rest/rest/deleteNote/" + todo.id);   
+            responsePromise.success(function(data, status, headers, config) { 
+            	if (data.result != 0 && data.result) {
+            		TodosService.todos.removeAt[index]; 
+            	}  
+            }); 
+            responsePromise.error(function(data, status, headers, config) {
+                alert("AJAX failed!");
+            }); 
+		};  
 		$scope.addTodo = function(item, event) { 
 			var title = $("#todoTitle").val(); 
 			var desc = $("#todoDesc").val(); 
 			var id = $("#todoId").val(); 
 			console.log("ID: " + id); 
-			var responsePromise = (id && id!=""?$http.post("http://192.168.1.103:8080/todo-rest/rest/addNote/" + title + "/" + desc):$http.post("http://192.168.1.103:8080/todo-rest/rest/updateNote/"+id+"/" + title + "/" + desc)); 
+			debugger; 
+			var responsePromise = (!id?$http.post("http://192.168.1.103:8080/todo-rest/rest/addNote/" + title + "/" + desc):$http.post("http://192.168.1.103:8080/todo-rest/rest/updateNote/"+id+"/" + title + "/" + desc)); 
             responsePromise.success(function(data, status, headers, config) { 
-                // After succes inserted into db, add to scope 
-            	if (data.result != 0) {
-            		var obj = {"id":data.result,"title":title,"desc":desc};
-            		TodosService.todos.push(obj); 
+                // After succes inserted into db, add to scope
+            	debugger; 
+            	if (data.result != 0 && data.result) { 
+            		if (id) { // Relative to Javascript 
+            			// Update OK 
+            			for (i=0;i<TodosService.todos.length;i++) {
+            				var objTodo = TodosService.todos[i]; 
+            				if (objTodo.id == id) {
+            					objTodo.title = title; 
+            					objTodo.desc = desc;  
+            				}  
+            			} 
+            		} else { 
+            			// Add OK 
+            			var obj = {"id":data.result,"title":title,"desc":desc};
+                		TodosService.todos.push(obj);
+            		} 
             		$scope.resetForm(); 
             	} 
             	console.log(TodosService.todos);    
@@ -131,10 +160,11 @@ todosApp.factory('TodosService', function () {
             }); 
 		}; 
 		$scope.loadTodo = function(item, event, index) {
+			debugger; 
 			var todo = TodosService.todos[index];  
 			$("#todoTitle").val(todo.title);
 			$("#todoDesc").val(todo.desc); 
-			$("#todoId").text=todo.id; 
+			$("#todoId").val(todo.id); 
 			$("#todoSubmit").text("Update"); 
 		}; 
 		$scope.resetForm = function() { 

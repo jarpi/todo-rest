@@ -4,12 +4,13 @@
             <p class="lead">(with off-canvas sidebar)</p>
           </h1>
           <div class="row block"> 
-          	<div class="col-xs-6 col-md-9 text-center"> 
+          	<div class="col-xs-12 col-md-9 text-center"> 
           		<div class="list-group" style="height:200px;overflow-y:scroll;" when-Scrolled="getTodos(item,$event)">   
-        			<a href="" class="list-group-item" ng-click="loadTodo(item, $event, $index)" ng-repeat="todo in todos | filter:q">{{todo.id + " " + todo.title + " " + todo.desc}}</a>
+          			<u ng-show="todos.length<1">No notes found</u>
+        			<a href="" class="list-group-item" ng-click="loadTodo(item, $event, $index)" ng-repeat="todo in todos | filter:q">{{todo.id + " " + todo.title + " " + todo.desc}}<span ng-click="removeTodo(item, $event, $index)">&nbsp;<u>Remove</u></span></a>
           		</div> 
           	</div> 
-          	<div class="col-xs-6 col-md-3"> 
+          	<div class="col-xs-12 col-md-3"> 
 	          	<div class="input-group input-group-lg"> 
           			<input id="todoSearch" type="text" class="form-control" placeholder="Search..." ng-model="q"></input>
 				  	<input id="todoTitle" type="text" class="form-control" placeholder="Note title">

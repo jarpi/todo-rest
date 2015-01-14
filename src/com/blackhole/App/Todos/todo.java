@@ -35,10 +35,10 @@ public class todo {
 	} 
 	public int UpdateTodo() throws SQLException { 
 		String sql = "UPDATE todos SET title=?, desc=? WHERE id=?";  
-		ArrayList<Object> objParams = new ArrayList<Object>(); 
-		objParams.add(this.id); 
+		ArrayList<Object> objParams = new ArrayList<Object>();  
 		objParams.add(this.title); 
 		objParams.add(this.desc); 
+		objParams.add(this.id);
 		int result = 0; 
 		result = this.mObjContext.mDBConnection.executeUpdate(sql, objParams.toArray(new Object[]{}));
 		return result; 
